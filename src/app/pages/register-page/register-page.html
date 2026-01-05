@@ -5,16 +5,81 @@
         </div>
     </div>
     <div id="register-content">
-        <form action="">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" placeholder="Your name here">
+        <form #RegisterForm="ngForm" (ngSubmit) = "RegisterForm.valid && RegisterAttempt()" >
+            <label for="email">User Name</label>
+            <input type="text" name="username" id="username" 
+            placeholder="How you want to be addressed" 
+            required 
+            [maxlength]="20" 
+            [minlength]="3"
+            ngModel
+            #usernameControl = "ngModel"
+            [(ngModel)]="formData.username">
+            <div class="error-message" 
+            *ngIf="usernameControl.hasError('minlength')">
+                The user name must be at least 3 characters long.
+            </div>
+            <div class="error-message" 
+            *ngIf="usernameControl.hasError('maxlength')">
+                The user name must not exceed 20 characters.
+            </div>
+
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" placeholder="name@email.com" required max="20">
+            <input type="email" name="email" id="email" 
+            placeholder="name@email.com" 
+            required 
+            [maxlength]="30"
+            ngModel
+            [(ngModel)]="formData.email"
+            #emailControl="ngModel">
+            <div class="error-message" *ngIf="emailControl.hasError('maxlength')">
+                The email must not exceed 30 characters.
+            </div>
+
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="*********" required max="20">
-            <label for="password">Password Again</label>
-            <input type="password" name="password" id="password" placeholder="*********" required max="20">
-            <button type="submit">Register</button>
+            <input type="password" name="password" id="password" 
+            placeholder="*********" 
+            required 
+            [maxlength]="20"
+            [minlength]="8"
+            [pattern]="passwordPattern"
+            ngModel 
+            #passwordControl = "ngModel"
+            [(ngModel)]="formData.password">
+            <div class="error-message" 
+            *ngIf="passwordControl.hasError('maxlength')">
+                Password cannot be longer than 20 characters.
+            </div>
+            <div class="error-message" 
+            *ngIf="passwordControl.hasError('minlength')">
+                Password cannot be shorter than 8 characters.
+            </div>
+            <div class="error-message" 
+            *ngIf="passwordControl.hasError('pattern')">
+                Password must contain at least one number.
+            </div>
+
+            <label for="passwordAgain">Password Again</label>
+            <input type="password" 
+            name="passwordAgain" 
+            id="passwordAgain" 
+            placeholder="*********" 
+            required
+            ngModel
+            [(ngModel)]="formData.passwordAgain"
+            #passwordAgainControl="ngModel">
+            <div class="error-message" 
+            *ngIf="passwordControl.touched 
+            && passwordAgainControl.touched 
+            && passwordControl.value !== passwordAgainControl.value">
+                Passwords must match.
+            </div>
+
+            <button type="submit"
+            [disabled] = "RegisterForm.invalid 
+            || passwordControl.value !== passwordAgainControl.value">
+                Register
+            </button>
         </form>
     </div>
 </section>

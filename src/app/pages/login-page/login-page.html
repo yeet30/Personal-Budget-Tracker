@@ -5,12 +5,39 @@
         </div>
     </div>
     <div id="login-content">
-        <form action="">
+        <form #loginForm="ngForm" (ngSubmit)="loginForm.valid && loginAttempt()">
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" placeholder="name@email.com" required max="20">
+            <input type="email" name="email" id="email" 
+            placeholder="name@email.com" 
+            required 
+            [maxlength]="30"
+            ngModel
+            [(ngModel)]="formData.email" 
+            #emailControl="ngModel">
+            <div class="error-message" *ngIf="emailControl.hasError('maxlength')">
+                The email must not exceed 30 characters.
+            </div>
+
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="*********" required max="20">
-            <button type="submit">Login</button>
+            <input type="password" name="password" id="password" 
+            placeholder="*********" 
+            required 
+            [maxlength]="20"
+            [minlength]="8"
+            ngModel
+            [(ngModel)]="formData.password"
+            #passwordControl = "ngModel">
+            <div class="error-message" 
+            *ngIf="passwordControl.hasError('maxlength')">
+                Password cannot be longer than 20 characters.
+            </div>
+            <div class="error-message" 
+            *ngIf="passwordControl.hasError('minlength')">
+                Password cannot be shorter than 8 characters.
+            </div>
+
+
+            <button type="submit" [disabled]="loginForm.invalid">Login</button>
         </form>
     </div>
 </section>
