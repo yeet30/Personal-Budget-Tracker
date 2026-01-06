@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegisterationSchema, RegisterForm } from '../../form-validator';
+import { UserService } from '../../user-service';
 
 @Component({
   selector: 'app-register-page',
@@ -11,6 +12,8 @@ import { RegisterationSchema, RegisterForm } from '../../form-validator';
   standalone: true,
 })
 export class RegisterPage {
+
+  constructor (public service: UserService){}
 
   formData : RegisterForm = {
     username: '',
@@ -29,6 +32,13 @@ export class RegisterPage {
     }
     else{
       console.log('The payload is being sent.');
+      this.service.addUser(this.formData)
+      .then(response => {
+        console.log('User created:', response);
+      })
+      .catch(error => {
+        console.error('Failed to create user', error);
+      });
     }
 
   }
