@@ -20,8 +20,10 @@ export class RegisterPage {
     email: '',
     password: '',
     passwordAgain: ''
+    
   }
   passwordPattern = /.*\d.*/;
+backendError: string | null = null;
 
   RegisterAttempt(){
     const result = RegisterationSchema.safeParse(this.formData);
@@ -30,16 +32,32 @@ export class RegisterPage {
       console.warn('Invalid payload blocked', result.error)
       return;
     }
-    else{
-      console.log('The payload is being sent.');
-      this.service.addUser(this.formData)
-      .then(response => {
-        console.log('User created:', response);
-      })
-      .catch(error => {
-        console.error('Failed to create user', error);
-      });
-    }
+    else {
+  console.log('The payload is being sent.');
+
+  this.backendError = null;
+
+  this.service.addUser(this.formData)
+    .then(response => {
+      console.log('User created:', response);
+      this.backendError = null;
+    })
+    .catch(error => {
+      console.error('Failed to create user', error);
+
+      if (error?.status === 409) {
+        this.backendError = error?.error?.message
+          || 'User with that email already exists!';
+      }
+      else if(error?.status === 201){
+        this.backendError = error?.error?.message || 'User added!';
+      } 
+      else {
+        this.backendError = 'There was an error. Try again!';
+      }
+    });
+}
+
 
   }
 

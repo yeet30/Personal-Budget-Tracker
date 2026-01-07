@@ -18,12 +18,20 @@ export class UserService{
             headers: header,
             body: JSON.stringify(userData),
         });
-
+        let data: any = null;
+        try {
+            data = await res.json();
+        } catch {
+            data = null;
+        }
         if (!res.ok) {
-            throw new Error('Failed to create user');
+            throw {
+                status : res.status,
+                error: data,
+            };
         }
 
-        return await res.json();
+        return data;
     }
 
     removeUser(userData: RegisterForm){
