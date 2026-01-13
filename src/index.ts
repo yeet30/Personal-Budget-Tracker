@@ -19,28 +19,40 @@ async function main() {
 
   if (!username || !email || !password || !passwordAgain) {
     return res.status(400).json({
-      message: "username, email, password i passwordAgain su obavezni.",
+      message: "Username, email, password and password confirmation are required.",
     });
   }
 
   if (password !== passwordAgain) {
     return res.status(400).json({
-      message: "Lozinke se ne poklapaju.",
+      message: "Passwords do not match.",
     });
   }
 
   try {
-    const existingUser = await db.get(
-      `SELECT user_id FROM "user" WHERE email = ? OR username = ? LIMIT 1`,
-      [email, username]
+    const emailExists = await db.get(
+      `SELECT 1 FROM "user" WHERE email = ? LIMIT 1`,
+      [email]
     );
 
-    if (existingUser) {
+    if (emailExists) {
       return res.status(409).json({
-        message: "User with that email already exists!",
+        message: "A user with this email already exists.",
       });
     }
-    const roleId = 1; 
+
+    const usernameExists = await db.get(
+      `SELECT 1 FROM "user" WHERE username = ? LIMIT 1`,
+      [username]
+    );
+
+    if (usernameExists) {
+      return res.status(409).json({
+        message: "This username is already taken.",
+      });
+    }
+
+    const roleId = 1;
 
     await db.run(
       `INSERT INTO "user" (email, username, password, role_id)
@@ -49,16 +61,39 @@ async function main() {
     );
 
     return res.status(201).json({
-      message: "Registration success",
+      message: "Registration successful.",
     });
+  } catch (err: any) {
+    if (
+      err?.code === "SQLITE_CONSTRAINT" ||
+      err?.code === "SQLITE_CONSTRAINT_UNIQUE"
+    ) {
+      const msg = String(err?.message || "");
 
-  } catch (err) {
+      if (msg.includes("user.email")) {
+        return res.status(409).json({
+          message: "A user with this email already exists.",
+        });
+      }
+
+      if (msg.includes("user.username")) {
+        return res.status(409).json({
+          message: "This username is already taken.",
+        });
+      }
+
+      return res.status(409).json({
+        message: "Email or username already exists.",
+      });
+    }
+
     console.error(err);
     return res.status(500).json({
-      message: "Server error",
+      message: "Internal server error.",
     });
   }
 });
+
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
