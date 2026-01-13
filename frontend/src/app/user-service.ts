@@ -1,42 +1,14 @@
 import { Injectable } from "@angular/core";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { firstValueFrom } from "rxjs";
 import { RegisterForm } from "./form-validator";
 
-@Injectable ({
-    providedIn: 'root'
-})
+@Injectable({ providedIn: "root" })
+export class UserService {
+  constructor(private http: HttpClient) {}
 
-export class UserService{
-
-    //To be changed before production.
-    private baseUrl = 'http://localhost:4200/api/users';
-
-    async addUser(userData: RegisterForm): Promise<RegisterForm> {
-        let header = new Headers();
-        header.set('Content-Type', 'application/json');
-        const res = await fetch(this.baseUrl, {
-            method: 'POST',
-            headers: header,
-            body: JSON.stringify(userData),
-        });
-        let data: any = null;
-        try {
-            data = await res.json();
-        } catch {
-            data = null;
-        }
-        if (!res.ok) {
-            throw {
-                status : res.status,
-                error: data,
-            };
-        }
-
-        return data;
-    }
-
-    removeUser(userData: RegisterForm){
-
-    }
-
-
+  async addUser(userData: RegisterForm) {
+    // koristi proxy => relative URL, bez localhost:4200
+    return firstValueFrom(this.http.post("/api/users", userData));
+  }
 }

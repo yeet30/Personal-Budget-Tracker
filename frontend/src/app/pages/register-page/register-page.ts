@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegisterationSchema, RegisterForm } from '../../form-validator';
@@ -12,55 +12,53 @@ import { UserService } from '../../user-service';
   standalone: true,
 })
 export class RegisterPage {
+  constructor(public service: UserService) {}
 
-  constructor (public service: UserService){}
-
-  formData : RegisterForm = {
+  formData: RegisterForm = {
     username: '',
     email: '',
     password: '',
-    passwordAgain: ''
-    
-  }
+    passwordAgain: '',
+  };
+
   passwordPattern = /.*\d.*/;
-backendError: string | null = null;
 
-  RegisterAttempt(){
+  backendError = signal<string | null>(null);
+
+  successMessage = signal<string | null>(null);
+
+  async RegisterAttempt() {
     const result = RegisterationSchema.safeParse(this.formData);
-
-    if(!result.success){
-      console.warn('Invalid payload blocked', result.error)
+    if (!result.success) {
+      console.warn('Invalid payload blocked', result.error);
       return;
     }
-    else {
-  console.log('The payload is being sent.');
 
-  this.backendError = null;
+    this.backendError.set(null);
+    this.successMessage.set(null);
 
-  this.service.addUser(this.formData)
-    .then(response => {
-      console.log('User created:', response);
-      this.backendError = null;
-    })
-    .catch(error => {
-      console.error('Failed to create user', error);
+    try {
+      await this.service.addUser(this.formData);
 
-      if (error?.status === 409) {
-        this.backendError = error?.error?.message
-          || 'User with that email already exists!';
+      this.successMessage.set('Registration successful! You can now log in.');
+
+      this.formData = {
+        username: '',
+        email: '',
+        password: '',
+        passwordAgain: '',
+      };
+
+    } catch (err: any) {
+      if (err?.status === 409) {
+        this.backendError.set(
+          err?.error?.message || 'User with that email already exists!'
+        );
+      } else {
+        this.backendError.set(
+          err?.error?.message || 'There was an error. Try again!'
+        );
       }
-      else if(error?.status === 201){
-        this.backendError = error?.error?.message || 'User added!';
-      } 
-      else {
-        this.backendError = 'There was an error. Try again!';
-      }
-    });
-}
-
-
+    }
   }
-
-
-  
 }
