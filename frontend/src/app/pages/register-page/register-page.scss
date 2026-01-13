@@ -51,8 +51,12 @@ button{
     padding: 0.2rem;
 }
 
+.success-message {
+  margin-top: 1rem;
+  color: #1b7f3c;
+}
+
 .backend-error {
-  margin-top: 12px;
-  text-align: center;
-  font-weight: 500;
+  margin-top: 1rem;
+  color: #a30000;
 }
