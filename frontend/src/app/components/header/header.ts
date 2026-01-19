@@ -1,12 +1,20 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Router, RouterLink } from "@angular/router";
+import { AuthService } from "../../auth-service";
 
 @Component({
-  selector: 'app-header',
-  imports: [RouterLink],
-  templateUrl: './header.html',
-  styleUrl: './header.scss',
+  selector: "app-header",
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: "./header.html",
+  styleUrl: "./header.scss",
 })
 export class Header {
+  constructor(public auth: AuthService, private router: Router) {}
 
+  async onLogout() {
+    await this.auth.logout();
+    this.router.navigate(["/login"]);
+  }
 }

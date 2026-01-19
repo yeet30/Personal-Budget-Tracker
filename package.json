@@ -13,12 +13,18 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "connect-sqlite3": "^0.9.16",
     "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "passport": "^0.7.0",
+    "passport-json": "^1.2.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/express-session": "^1.18.2",
+    "@types/passport": "^1.0.17",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }

@@ -1,79 +1,84 @@
 header {
-    position: fixed;
-    width: 100%;
+  position: fixed;
+  width: 100%;
+  display: flex;
+  padding: 0;
+  padding-inline: 16px;
+  padding-block: 8px;
+  background-color: #444;
+  color: white;
+  height: 10vh;
+  align-items: center;
+  z-index: 1000;
+}
+
+nav {
+  width: 100%;
+}
+
+.header-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#logo-and-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    width: 28px;
+    height: 28px;
+  }
+
+  h1 {
+    margin: 0;
+  }
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+
+  li {
+    list-style-type: none;
     display: flex;
-    padding: 0;
-    padding-inline: 16px;
-    padding-block: 8px;
-    background-color: #444;
-    color: white;
-    height: 10vh;
     align-items: center;
+  }
 }
 
-.tab-button{
-    display: block;
-    width: 6rem;
-    background: white;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    text-align: center;
-    color: black;
-    font-weight: bold;
-    text-decoration: none;
+.tab-button {
+  display: block;
+  width: 6rem;
+  background: white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
 }
 
-.tab-button:hover{
-    display: block;
-    background: #ddd;
-    padding: 10px;
-    text-align: center;
-    color: black;
-    font-weight: bold;
-    text-decoration: none;
+.tab-button:hover {
+  background: #ddd;
 }
 
-.tab-button:focus{
-    display: block;
-    background: #999;
-    padding: 10px;
-    text-align: center;
-    color: black;
-    font-weight: bold;
-    text-decoration: none;
+.tab-button:focus {
+  background: #999;
+  outline: none;
 }
 
-nav{
-    padding: 0;
-    align-items: center;
-    width: 100%;
-}
-
-span{
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#logo-and-title{
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-#li-login{
-    margin-left: 1rem;
-}
-
-ul{
-    display: flex;
-    button{
-        width: 5rem;
-        padding: 0.5rem;
-    }
-    
-    li {
-        list-style-type: none;
-    }
+.nav-user {
+  color: white;
+  font-weight: bold;
+  margin-left: 8px;
+  white-space: nowrap;
 }

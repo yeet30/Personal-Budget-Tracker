@@ -1,31 +1,43 @@
 <header>
-    <nav>
-        <span>
-            <div id="logo-and-title">
-                <img src="../../../../public/favicon.ico" alt="🪙">
-                <h1>Personal Budget Tracker</h1>
-            </div>
-            <ul>
-                <li>
-                    <a class="tab-button" href="#home-section">Home</a>
-                </li>
-                <li>
-                    <a class="tab-button" href="#features-section">Features</a>
-                </li>
-                <li>
-                    <a class="tab-button" href="#about-section">About Us</a>
-                </li>
-                <li>
-                    <a class="tab-button" href="#about-section">Contacts</a>
-                </li>
-                <li id="li-login">
-                    <a class="tab-button" routerLink="/login" >Login</a>
-                </li>
-                <li>
-                    <a class="tab-button" routerLink="/register">Register</a>
-                </li>
-            </ul>
-        </span>
-        
-    </nav>
+  <nav>
+    <div class="header-row">
+      <div id="logo-and-title">
+        <img src="/favicon.ico" alt="🪙" />
+        <h1>Personal Budget Tracker</h1>
+      </div>
+
+      <ul>
+        <li>
+          <a class="tab-button" href="#home-section">Home</a>
+        </li>
+        <li>
+          <a class="tab-button" href="#features-section">Features</a>
+        </li>
+        <li>
+          <a class="tab-button" href="#about-section">About Us</a>
+        </li>
+        <li>
+          <a class="tab-button" href="#contacts-section">Contacts</a>
+        </li>
+
+        <ng-container *ngIf="!auth.user(); else loggedIn">
+          <li>
+            <a class="tab-button" routerLink="/login">Login</a>
+          </li>
+          <li>
+            <a class="tab-button" routerLink="/register">Register</a>
+          </li>
+        </ng-container>
+
+        <ng-template #loggedIn>
+          <li>
+            <button type="button" class="tab-button" (click)="onLogout()">
+              Logout
+            </button>
+          </li>
+          <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
+        </ng-template>
+      </ul>
+    </div>
+  </nav>
 </header>

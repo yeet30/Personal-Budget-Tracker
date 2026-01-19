@@ -1,24 +1,22 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './auth-service';
 import { Header } from './components/header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,Header],
+  standalone: true,
+  imports: [RouterOutlet, Header],
   template: `
-    <app-header />
-    <main>
-      <router-outlet />
-    </main>
-    
+    <app-header></app-header>
+    <router-outlet></router-outlet>
   `,
-  styles: [
-    `
-    main{
-      padding-inline: 16px;
-    }
-    `],
 })
-export class App {
-  protected readonly title = signal('Personal-Budget-Tracker');
+export class App implements OnInit {
+  constructor(public auth: AuthService) {}
+
+  async ngOnInit() {
+    await this.auth.refreshMe();
+    console.log('AFTER REFRESH (me):', this.auth.user());
+  }
 }

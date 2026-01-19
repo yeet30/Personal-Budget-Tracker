@@ -1,43 +1,73 @@
 <section id="login-section">
-    <div id="title-section">
-        <div id="title-div">
-            <h1>Login with your account</h1>
-        </div>
+  <div id="title-section">
+    <div id="title-div">
+      <h1>Login with your account</h1>
     </div>
-    <div id="login-content">
-        <form #loginForm="ngForm" (ngSubmit)="loginForm.valid && loginAttempt()">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" 
-            placeholder="name@email.com" 
-            required 
-            [maxlength]="30"
-            ngModel
-            [(ngModel)]="formData.email" 
-            #emailControl="ngModel">
-            <div class="error-message" *ngIf="emailControl.hasError('maxlength')">
-                The email must not exceed 30 characters.
-            </div>
+  </div>
 
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" 
-            placeholder="*********" 
-            required 
-            [maxlength]="20"
-            [minlength]="8"
-            ngModel
-            [(ngModel)]="formData.password"
-            #passwordControl = "ngModel">
-            <div class="error-message" 
-            *ngIf="passwordControl.hasError('maxlength')">
-                Password cannot be longer than 20 characters.
-            </div>
-            <div class="error-message" 
-            *ngIf="passwordControl.hasError('minlength')">
-                Password cannot be shorter than 8 characters.
-            </div>
+  <div id="login-content">
+    <form #loginForm="ngForm" (ngSubmit)="loginAttempt()">
+      <label for="email">Email</label>
+      <input
+        (input)="clearMessages(); clearFieldError('email')"
+        type="email"
+        name="email"
+        id="email"
+        placeholder="name@email.com"
+        required
+        [maxlength]="30"
+        [(ngModel)]="formData.email"
+        #emailControl="ngModel"
+      />
 
+      <div class="error-message" *ngIf="emailControl.touched && emailControl.hasError('maxlength')">
+        The email must not exceed 30 characters.
+      </div>
 
-            <button type="submit" [disabled]="loginForm.invalid">Login</button>
-        </form>
-    </div>
+      <div class="error-message" *ngIf="fieldErrors().email">
+        {{ fieldErrors().email }}
+      </div>
+
+      <label for="password">Password</label>
+      <input
+        (input)="clearMessages(); clearFieldError('password')"
+        type="password"
+        name="password"
+        id="password"
+        placeholder="*********"
+        required
+        [maxlength]="20"
+        [minlength]="8"
+        [(ngModel)]="formData.password"
+        #passwordControl="ngModel"
+      />
+
+      <div
+        class="error-message"
+        *ngIf="passwordControl.touched && passwordControl.hasError('maxlength')"
+      >
+        Password cannot be longer than 20 characters.
+      </div>
+      <div
+        class="error-message"
+        *ngIf="passwordControl.touched && passwordControl.hasError('minlength')"
+      >
+        Password cannot be shorter than 8 characters.
+      </div>
+
+      <div class="error-message" *ngIf="fieldErrors().password">
+        {{ fieldErrors().password }}
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+
+      <div class="error-message backend-error" *ngIf="backendError()">
+        {{ backendError() }}
+      </div>
+
+      <div class="success-message" *ngIf="successMessage()">
+        {{ successMessage() }}
+      </div>
+    </form>
+  </div>
 </section>

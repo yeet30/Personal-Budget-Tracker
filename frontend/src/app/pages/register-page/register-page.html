@@ -6,10 +6,10 @@
   </div>
 
   <div id="register-content">
-    <form #RegisterForm="ngForm" (ngSubmit)="RegisterForm.valid && RegisterAttempt()">
+    <form #RegisterForm="ngForm" (ngSubmit)="RegisterAttempt()">
       <label for="username">User Name</label>
       <input
-        (input)="backendError.set(null); successMessage.set(null); usernameBackendError.set(null)"
+        (input)="clearMessages(); clearFieldError('username')"
         type="text"
         name="username"
         id="username"
@@ -21,19 +21,30 @@
         #usernameControl="ngModel"
       />
 
-      <div class="error-message" *ngIf="usernameControl.hasError('minlength')">
+      <div
+        class="error-message"
+        *ngIf="usernameControl.touched && usernameControl.hasError('minlength')"
+      >
         The user name must be at least 3 characters long.
       </div>
-      <div class="error-message" *ngIf="usernameControl.hasError('maxlength')">
+      <div
+        class="error-message"
+        *ngIf="usernameControl.touched && usernameControl.hasError('maxlength')"
+      >
         The user name must not exceed 20 characters.
       </div>
+
       <div class="error-message" *ngIf="usernameBackendError()">
         {{ usernameBackendError() }}
       </div>
 
+      <div class="error-message" *ngIf="fieldErrors().username">
+        {{ fieldErrors().username }}
+      </div>
+
       <label for="email">Email</label>
       <input
-        (input)="backendError.set(null); successMessage.set(null); emailBackendError.set(null)"
+        (input)="clearMessages(); clearFieldError('email')"
         type="email"
         name="email"
         id="email"
@@ -44,16 +55,21 @@
         #emailControl="ngModel"
       />
 
-      <div class="error-message" *ngIf="emailControl.hasError('maxlength')">
+      <div class="error-message" *ngIf="emailControl.touched && emailControl.hasError('maxlength')">
         The email must not exceed 30 characters.
       </div>
+
       <div class="error-message" *ngIf="emailBackendError()">
         {{ emailBackendError() }}
       </div>
 
+      <div class="error-message" *ngIf="fieldErrors().email">
+        {{ fieldErrors().email }}
+      </div>
+
       <label for="password">Password</label>
       <input
-        (input)="backendError.set(null); successMessage.set(null)"
+        (input)="clearMessages(); clearFieldError('password')"
         type="password"
         name="password"
         id="password"
@@ -66,19 +82,32 @@
         #passwordControl="ngModel"
       />
 
-      <div class="error-message" *ngIf="passwordControl.hasError('maxlength')">
+      <div
+        class="error-message"
+        *ngIf="passwordControl.touched && passwordControl.hasError('maxlength')"
+      >
         Password cannot be longer than 20 characters.
       </div>
-      <div class="error-message" *ngIf="passwordControl.hasError('minlength')">
+      <div
+        class="error-message"
+        *ngIf="passwordControl.touched && passwordControl.hasError('minlength')"
+      >
         Password cannot be shorter than 8 characters.
       </div>
-      <div class="error-message" *ngIf="passwordControl.hasError('pattern')">
+      <div
+        class="error-message"
+        *ngIf="passwordControl.touched && passwordControl.hasError('pattern')"
+      >
         Password must contain at least one number.
+      </div>
+
+      <div class="error-message" *ngIf="fieldErrors().password">
+        {{ fieldErrors().password }}
       </div>
 
       <label for="passwordAgain">Password Again</label>
       <input
-        (input)="backendError.set(null); successMessage.set(null)"
+        (input)="clearMessages(); clearFieldError('passwordAgain')"
         type="password"
         name="passwordAgain"
         id="passwordAgain"
@@ -97,6 +126,10 @@
         "
       >
         Passwords must match.
+      </div>
+
+      <div class="error-message" *ngIf="fieldErrors().passwordAgain">
+        {{ fieldErrors().passwordAgain }}
       </div>
 
       <button
