@@ -23,19 +23,21 @@ export class RegisterPage {
 
   passwordPattern = /.*\d.*/;
 
+  emailBackendError = signal<string | null>(null);
+  usernameBackendError = signal<string | null>(null);
   backendError = signal<string | null>(null);
-
   successMessage = signal<string | null>(null);
 
   async RegisterAttempt() {
+    this.backendError.set(null);
+    this.successMessage.set(null);
+    this.usernameBackendError.set(null);
+    this.emailBackendError.set(null);
     const result = RegisterationSchema.safeParse(this.formData);
     if (!result.success) {
       console.warn('Invalid payload blocked', result.error);
       return;
     }
-
-    this.backendError.set(null);
-    this.successMessage.set(null);
 
     try {
       await this.service.addUser(this.formData);
@@ -48,17 +50,17 @@ export class RegisterPage {
         password: '',
         passwordAgain: '',
       };
-
     } catch (err: any) {
-      if (err?.status === 409) {
-        this.backendError.set(
-          err?.error?.message || 'User with that email already exists!'
-        );
-      } else {
-        this.backendError.set(
-          err?.error?.message || 'There was an error. Try again!'
-        );
+      const fieldErrors = err?.error?.errors;
+
+      if (err?.status === 409 && fieldErrors) {
+        this.usernameBackendError.set(fieldErrors.username ?? null);
+        this.emailBackendError.set(fieldErrors.email ?? null);
+        this.backendError.set(err?.error?.message ?? 'User already exists.');
+        return;
       }
+
+      this.backendError.set(err?.error?.message ?? 'There was an error. Try again!');
     }
   }
 }

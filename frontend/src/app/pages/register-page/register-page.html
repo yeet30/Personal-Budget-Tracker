@@ -9,7 +9,7 @@
     <form #RegisterForm="ngForm" (ngSubmit)="RegisterForm.valid && RegisterAttempt()">
       <label for="username">User Name</label>
       <input
-        (input)="backendError.set(null); successMessage.set(null)"
+        (input)="backendError.set(null); successMessage.set(null); usernameBackendError.set(null)"
         type="text"
         name="username"
         id="username"
@@ -27,10 +27,13 @@
       <div class="error-message" *ngIf="usernameControl.hasError('maxlength')">
         The user name must not exceed 20 characters.
       </div>
+      <div class="error-message" *ngIf="usernameBackendError()">
+        {{ usernameBackendError() }}
+      </div>
 
       <label for="email">Email</label>
       <input
-        (input)="backendError.set(null); successMessage.set(null)"
+        (input)="backendError.set(null); successMessage.set(null); emailBackendError.set(null)"
         type="email"
         name="email"
         id="email"
@@ -44,9 +47,13 @@
       <div class="error-message" *ngIf="emailControl.hasError('maxlength')">
         The email must not exceed 30 characters.
       </div>
+      <div class="error-message" *ngIf="emailBackendError()">
+        {{ emailBackendError() }}
+      </div>
 
       <label for="password">Password</label>
       <input
+        (input)="backendError.set(null); successMessage.set(null)"
         type="password"
         name="password"
         id="password"
@@ -71,6 +78,7 @@
 
       <label for="passwordAgain">Password Again</label>
       <input
+        (input)="backendError.set(null); successMessage.set(null)"
         type="password"
         name="passwordAgain"
         id="passwordAgain"

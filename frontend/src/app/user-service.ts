@@ -8,7 +8,16 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   async addUser(userData: RegisterForm) {
-    // koristi proxy => relative URL, bez localhost:4200
-    return firstValueFrom(this.http.post("/api/users", userData));
+    try {
+      return await firstValueFrom(this.http.post("/api/users", userData));
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+
+      throw {
+        status: err.status,
+        error: err.error,
+        message: err.message,
+      };
+    }
   }
 }
