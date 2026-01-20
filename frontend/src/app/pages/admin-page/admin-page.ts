@@ -182,6 +182,15 @@ export class AdminUsersPage implements OnInit {
   }
 
   roleLabel(roleId: number) {
-    return roleId === 2 ? 'Admin' : 'User';
+    switch (roleId) {
+      case 1:
+        return 'User';
+      case 2:
+        return 'Admin';
+      case 3:
+        return 'Control User';
+      default:
+        return 'Unknown';
+    }
   }
 }
