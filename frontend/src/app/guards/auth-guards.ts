@@ -1,6 +1,6 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router, UrlTree } from "@angular/router";
-import { AuthService } from "./auth-service";
+import { AuthService } from "../services/auth-service";
 
 async function ensureAuthLoaded(auth: AuthService) {
   if (auth.loading()) {

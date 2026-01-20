@@ -2,7 +2,8 @@ import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegisterationSchema, RegisterForm } from '../../form-validator';
-import { UserService } from '../../user-service';
+import { UserService } from '../../services/user-service';
+import { VALIDATION } from '../../validation-rules';
 
 type RegisterField = 'username' | 'email' | 'password' | 'passwordAgain';
 
@@ -23,7 +24,7 @@ export class RegisterPage {
     passwordAgain: '',
   };
 
-  passwordPattern = /.*\d.*/;
+  passwordPattern = VALIDATION.PASSWORD.HAS_NUMBER_REGEX;
 
   fieldErrors = signal<Partial<Record<RegisterField, string>>>({});
 

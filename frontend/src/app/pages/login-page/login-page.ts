@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { LoginForm, LoginSchema } from '../../form-validator';
-import { UserService } from '../../user-service';
-import { AuthService } from '../../auth-service';
+import { UserService } from '../../services/user-service';
+import { AuthService } from '../../services/auth-service';
 
 type LoginField = 'email' | 'password';
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { RegisterForm } from './form-validator';
+import { RegisterForm } from '../form-validator';
 
 export type AdminUserRow = {
   user_id: number;

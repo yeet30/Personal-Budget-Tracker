@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AdminUserRow, UserService } from '../../user-service';
+import { AdminUserRow, UserService } from '../../services/user-service';
+import {
+  validateEmail,
+  validateUsername,
+  validatePassword,
+  normalizeEmail,
+  normalizeUsername,
+} from '../../validation-rules';
 
 type EditModel = {
   email: string;
@@ -95,16 +102,17 @@ export class AdminUsersPage implements OnInit {
       role_id: model.role_id,
     };
 
-    if (model.password && model.password.length > 0) {
-      if (model.password.length < 8) {
-        this.error.set('Password must be at least 8 characters.');
+    if (model.password && model.password.trim().length > 0) {
+      const passErr = validatePassword(model.password);
+      if (passErr) {
+        this.error.set(passErr);
         return;
       }
-      if (!/.*\d.*/.test(model.password)) {
-        this.error.set('Password must contain at least one number.');
-        return;
-      }
+      payload.password = model.password;
     }
+
+    payload.email = normalizeEmail(model.email);
+    payload.username = normalizeUsername(model.username);
 
     try {
       await this.userService.adminUpdateUser(userId, payload);
@@ -119,35 +127,29 @@ export class AdminUsersPage implements OnInit {
   async createUser() {
     this.clearMessages();
     this.fieldErrors.set({});
-
-    const m = this.createForm();
     const errors: any = {};
 
-    if (!m.email.trim()) {
-      errors.email = 'Email is required.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m.email)) {
-      errors.email = 'Invalid email format.';
-    }
+    const m = this.createForm();
 
-    if (!m.username.trim()) {
-      errors.username = 'Username is required.';
-    } else if (m.username.length < 3) {
-      errors.username = 'Username must be at least 3 characters.';
-    }
+    const emailErr = validateEmail(m.email);
+    if (emailErr) errors.email = emailErr;
 
-    if (!m.password) {
-      errors.password = 'Password is required.';
-    } else if (m.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters.';
-    } else if (!/.*\d.*/.test(m.password)) {
-      errors.password = 'Password must contain at least one number.';
-    }
+    const usernameErr = validateUsername(m.username);
+    if (usernameErr) errors.username = usernameErr;
+
+    const passErr = validatePassword(m.password);
+    if (passErr) errors.password = passErr;
 
     if (Object.keys(errors).length > 0) {
       this.fieldErrors.set(errors);
       return;
     }
-
+    const payload = {
+      email: normalizeEmail(m.email),
+      username: normalizeUsername(m.username),
+      password: m.password,
+      role_id: Number(m.role_id),
+    };
     try {
       await this.userService.adminCreateUser({
         email: m.email.trim().toLowerCase(),
