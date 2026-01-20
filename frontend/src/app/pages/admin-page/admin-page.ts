@@ -95,8 +95,15 @@ export class AdminUsersPage implements OnInit {
       role_id: model.role_id,
     };
 
-    if (model.password && model.password.trim().length > 0) {
-      payload.password = model.password;
+    if (model.password && model.password.length > 0) {
+      if (model.password.length < 8) {
+        this.error.set('Password must be at least 8 characters.');
+        return;
+      }
+      if (!/.*\d.*/.test(model.password)) {
+        this.error.set('Password must contain at least one number.');
+        return;
+      }
     }
 
     try {
@@ -132,6 +139,8 @@ export class AdminUsersPage implements OnInit {
       errors.password = 'Password is required.';
     } else if (m.password.length < 8) {
       errors.password = 'Password must be at least 8 characters.';
+    } else if (!/.*\d.*/.test(m.password)) {
+      errors.password = 'Password must contain at least one number.';
     }
 
     if (Object.keys(errors).length > 0) {

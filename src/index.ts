@@ -256,7 +256,6 @@ async function main() {
     }
   });
 
-  // Get one user
   app.get(
     "/api/admin/users/:id",
     requireAuth,
@@ -297,6 +296,17 @@ async function main() {
     if (!cleanEmail || !cleanUsername || !cleanPassword) {
       return res.status(400).json({
         message: "email, username and password are required.",
+      });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters.",
+      });
+    }
+
+    if (!/\d/.test(password)) {
+      return res.status(400).json({
+        message: "Password must contain at least one number.",
       });
     }
 
