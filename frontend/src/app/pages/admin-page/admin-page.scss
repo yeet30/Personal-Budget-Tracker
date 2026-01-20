@@ -1,0 +1,101 @@
+.admin-users {
+  padding: 16px;
+  padding-top: 12vh; // because header is fixed
+}
+
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.messages {
+  margin: 8px 0 16px 0;
+}
+
+.error {
+  padding: 10px;
+  border: 1px solid #cc0000;
+  background: #ffe6e6;
+  margin-bottom: 8px;
+}
+
+.success {
+  padding: 10px;
+  border: 1px solid #0a7a0a;
+  background: #e6ffe6;
+  margin-bottom: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+input,
+select {
+  padding: 8px;
+  border: 1px solid #aaa;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.actions {
+  width: 320px;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid #999;
+  background: #eee;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+button.primary {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+button.danger {
+  background: #b30000;
+  color: white;
+  border-color: #b30000;
+}
+
+.edit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reset {
+  font-weight: 600;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+}

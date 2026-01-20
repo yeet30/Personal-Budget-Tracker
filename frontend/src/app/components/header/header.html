@@ -5,22 +5,20 @@
         <img src="/favicon.ico" alt="🪙" />
         <h1>Personal Budget Tracker</h1>
       </div>
-
       <ul>
-        <li>
-          <a class="tab-button" href="#home-section">Home</a>
-        </li>
-        <li>
-          <a class="tab-button" href="#features-section">Features</a>
-        </li>
-        <li>
-          <a class="tab-button" href="#about-section">About Us</a>
-        </li>
-        <li>
-          <a class="tab-button" href="#contacts-section">Contacts</a>
-        </li>
-
-        <ng-container *ngIf="!auth.user(); else loggedIn">
+        <ng-container *ngIf="!auth.user()">
+          <li>
+            <a class="tab-button" href="#home-section">Home</a>
+          </li>
+          <li>
+            <a class="tab-button" href="#features-section">Features</a>
+          </li>
+          <li>
+            <a class="tab-button" href="#about-section">About Us</a>
+          </li>
+          <li>
+            <a class="tab-button" href="#contacts-section">Contacts</a>
+          </li>
           <li>
             <a class="tab-button" routerLink="/login">Login</a>
           </li>
@@ -29,14 +27,34 @@
           </li>
         </ng-container>
 
-        <ng-template #loggedIn>
+        <ng-container *ngIf="auth.user()?.role_id === 2">
           <li>
-            <button type="button" class="tab-button" (click)="onLogout()">
-              Logout
-            </button>
+            <a class="tab-button" routerLink="/admin/users">Admin</a>
+          </li>
+          <li>
+            <button type="button" class="tab-button" (click)="onLogout()">Logout</button>
           </li>
           <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
-        </ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="auth.user() && auth.user()?.role_id !== 2">
+          <li>
+            <a class="tab-button" routerLink="/home">Home</a>
+          </li>
+          <li>
+            <a class="tab-button" href="#features-section">Features</a>
+          </li>
+          <li>
+            <a class="tab-button" href="#about-section">About Us</a>
+          </li>
+          <li>
+            <a class="tab-button" href="#contacts-section">Contacts</a>
+          </li>
+          <li>
+            <button type="button" class="tab-button" (click)="onLogout()">Logout</button>
+          </li>
+          <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
+        </ng-container>
       </ul>
     </div>
   </nav>

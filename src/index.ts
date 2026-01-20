@@ -101,6 +101,19 @@ async function main() {
       done(e);
     }
   });
+  function requireAuth(req: any, res: any, next: any) {
+    if (req.isAuthenticated && req.isAuthenticated()) {
+      return next();
+    }
+    return res.status(401).json({ message: "Not authenticated." });
+  }
+
+  function requireAdmin(req: any, res: any, next: any) {
+    if (req.user?.role_id === 2) {
+      return next();
+    }
+    return res.status(403).json({ message: "Admin access required." });
+  }
 
   app.post("/api/users", async (req, res) => {
     const { username, email, password, passwordAgain } = req.body ?? {};
@@ -228,6 +241,205 @@ async function main() {
       res.json({ message: "Logged out" });
     });
   });
+
+  app.get("/api/admin/users", requireAuth, requireAdmin, async (_req, res) => {
+    try {
+      const users = await db.all(
+        `SELECT user_id, email, username, role_id
+       FROM "user"
+       ORDER BY user_id ASC`,
+      );
+      return res.json({ users });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  });
+
+  // Get one user
+  app.get(
+    "/api/admin/users/:id",
+    requireAuth,
+    requireAdmin,
+    async (req, res) => {
+      const id = Number(req.params.id);
+      if (!Number.isFinite(id)) {
+        return res.status(400).json({ message: "Invalid id." });
+      }
+
+      try {
+        const user = await db.get(
+          `SELECT user_id, email, username, role_id
+       FROM "user"
+       WHERE user_id = ?
+       LIMIT 1`,
+          [id],
+        );
+
+        if (!user) return res.status(404).json({ message: "User not found." });
+        return res.json({ user });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error." });
+      }
+    },
+  );
+
+  app.post("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
+    const { email, username, password, role_id } = req.body ?? {};
+
+    const cleanEmail =
+      typeof email === "string" ? email.trim().toLowerCase() : "";
+    const cleanUsername = typeof username === "string" ? username.trim() : "";
+    const cleanPassword = typeof password === "string" ? password : "";
+    const roleId = Number.isFinite(Number(role_id)) ? Number(role_id) : 1;
+
+    if (!cleanEmail || !cleanUsername || !cleanPassword) {
+      return res.status(400).json({
+        message: "email, username and password are required.",
+      });
+    }
+
+    try {
+      const existing = await db.get(
+        `SELECT user_id, email, username
+       FROM "user"
+       WHERE email = ? OR username = ?
+       LIMIT 1`,
+        [cleanEmail, cleanUsername],
+      );
+
+      if (existing) {
+        return res
+          .status(409)
+          .json({ message: "Email or username already exists." });
+      }
+
+      const hashed = hashPassword(cleanPassword);
+
+      await db.run(
+        `INSERT INTO "user" (email, username, password, role_id)
+       VALUES (?, ?, ?, ?)`,
+        [cleanEmail, cleanUsername, hashed, roleId],
+      );
+
+      return res.status(201).json({ message: "User created." });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  });
+
+  app.put(
+    "/api/admin/users/:id",
+    requireAuth,
+    requireAdmin,
+    async (req, res) => {
+      const id = Number(req.params.id);
+      if (!Number.isFinite(id))
+        return res.status(400).json({ message: "Invalid id." });
+
+      const { email, username, password, role_id } = req.body ?? {};
+
+      const cleanEmail =
+        typeof email === "string" ? email.trim().toLowerCase() : undefined;
+      const cleanUsername =
+        typeof username === "string" ? username.trim() : undefined;
+      const cleanPassword = typeof password === "string" ? password : undefined;
+      const roleId =
+        role_id !== undefined && Number.isFinite(Number(role_id))
+          ? Number(role_id)
+          : undefined;
+
+      try {
+        const exists = await db.get(
+          `SELECT user_id FROM "user" WHERE user_id = ? LIMIT 1`,
+          [id],
+        );
+        if (!exists)
+          return res.status(404).json({ message: "User not found." });
+
+        if (cleanEmail || cleanUsername) {
+          const conflict = await db.get(
+            `SELECT user_id FROM "user"
+         WHERE (email = ? OR username = ?) AND user_id <> ?
+         LIMIT 1`,
+            [cleanEmail ?? "", cleanUsername ?? "", id],
+          );
+          if (conflict)
+            return res
+              .status(409)
+              .json({ message: "Email or username already exists." });
+        }
+
+        const fields: string[] = [];
+        const values: any[] = [];
+
+        if (cleanEmail !== undefined) {
+          fields.push("email = ?");
+          values.push(cleanEmail);
+        }
+        if (cleanUsername !== undefined) {
+          fields.push("username = ?");
+          values.push(cleanUsername);
+        }
+        if (roleId !== undefined) {
+          fields.push("role_id = ?");
+          values.push(roleId);
+        }
+        if (cleanPassword !== undefined && cleanPassword.length > 0) {
+          fields.push("password = ?");
+          values.push(hashPassword(cleanPassword));
+        }
+
+        if (fields.length === 0) {
+          return res.status(400).json({ message: "No fields to update." });
+        }
+
+        values.push(id);
+
+        await db.run(
+          `UPDATE "user" SET ${fields.join(", ")} WHERE user_id = ?`,
+          values,
+        );
+
+        return res.json({ message: "User updated." });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error." });
+      }
+    },
+  );
+
+  app.delete(
+    "/api/admin/users/:id",
+    requireAuth,
+    requireAdmin,
+    async (req: any, res) => {
+      const id = Number(req.params.id);
+      if (!Number.isFinite(id))
+        return res.status(400).json({ message: "Invalid id." });
+
+      if (req.user?.user_id === id) {
+        return res
+          .status(400)
+          .json({ message: "You cannot delete your own account." });
+      }
+
+      try {
+        const result = await db.run(`DELETE FROM "user" WHERE user_id = ?`, [
+          id,
+        ]);
+        if (result.changes === 0)
+          return res.status(404).json({ message: "User not found." });
+
+        return res.json({ message: "User deleted." });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error." });
+      }
+    },
+  );
 
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 

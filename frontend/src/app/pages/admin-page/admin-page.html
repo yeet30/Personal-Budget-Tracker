@@ -1,0 +1,114 @@
+<section class="admin-users">
+  <h2>Admin: Users</h2>
+
+  <div class="messages">
+    <div class="error" *ngIf="error()">{{ error() }}</div>
+    <div class="success" *ngIf="success()">{{ success() }}</div>
+  </div>
+
+  <div class="card">
+    <h3>Create user</h3>
+
+    <div class="grid">
+      <label>
+        Email
+        <input type="email" [(ngModel)]="createForm().email" />
+        <div class="error" *ngIf="fieldErrors().email">
+          {{ fieldErrors().email }}
+        </div>
+      </label>
+
+      <label>
+        Username
+        <input type="text" [(ngModel)]="createForm().username" />
+        <div class="error" *ngIf="fieldErrors().username">
+          {{ fieldErrors().username }}
+        </div>
+      </label>
+
+      <label>
+        Password
+        <input type="password" [(ngModel)]="createForm().password" />
+        <div class="error" *ngIf="fieldErrors().password">
+          {{ fieldErrors().password }}
+        </div>
+      </label>
+
+      <label>
+        Role
+        <select [(ngModel)]="createForm().role_id" (change)="clearMessages()">
+          <option [ngValue]="1">User</option>
+          <option [ngValue]="2">Admin</option>
+          <option [ngValue]="3">Control User</option>
+        </select>
+      </label>
+    </div>
+
+    <button class="primary" (click)="createUser()">Create</button>
+  </div>
+
+  <div class="card">
+    <h3>All users</h3>
+
+    <div *ngIf="loading()">Loading...</div>
+
+    <table *ngIf="!loading() && users().length">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let u of users()">
+          <td>{{ u.user_id }}</td>
+
+          <td *ngIf="editingId() !== u.user_id">{{ u.email }}</td>
+          <td *ngIf="editingId() === u.user_id">
+            <input type="email" [(ngModel)]="editForm().email" />
+          </td>
+
+          <td *ngIf="editingId() !== u.user_id">{{ u.username }}</td>
+          <td *ngIf="editingId() === u.user_id">
+            <input type="text" [(ngModel)]="editForm().username" />
+          </td>
+
+          <td *ngIf="editingId() !== u.user_id">{{ roleLabel(u.role_id) }}</td>
+          <td *ngIf="editingId() === u.user_id">
+            <select [(ngModel)]="editForm().role_id">
+              <option [ngValue]="1">User</option>
+              <option [ngValue]="2">Admin</option>
+            </select>
+          </td>
+
+          <td class="actions">
+            <ng-container *ngIf="editingId() !== u.user_id; else editActions">
+              <button (click)="startEdit(u)">Edit</button>
+              <button class="danger" (click)="deleteUser(u)">Delete</button>
+            </ng-container>
+
+            <ng-template #editActions>
+              <div class="edit-actions">
+                <label class="reset">
+                  Reset password (optional)
+                  <input type="password" [(ngModel)]="editForm().password" />
+                </label>
+
+                <div class="btn-row">
+                  <button class="primary" (click)="saveEdit(u.user_id)">Save</button>
+                  <button (click)="cancelEdit()">Cancel</button>
+                </div>
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!loading() && !users().length">No users found.</div>
+  </div>
+</section>
