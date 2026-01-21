@@ -1,41 +1,69 @@
-
-
-#title-section{
-    display: flex;
-    align-items: center;
-    height: 20vh;
+#login-section {
+  min-height: calc(100vh - 10vh);
+  display: flex;
+  flex-direction: column;
 }
 
-#title-div{
-    margin-left: 25%;
+#title-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
 }
 
-
-#login-content{
-    height: 70vh;
-    font-size: 1.5rem;
-    display: flex;
+#login-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-form{
-    margin-left: 25%;
-    width: 20%;
-    display: flex;
-    flex-direction: column;
+form {
+  width: min(420px, 90%);
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
 }
 
-label{
-    margin-top: 0.2rem;
+label {
+  margin-top: 0.75rem;
+  font-weight: 600;
 }
 
-input{
-    margin-top: 0.2rem;
-    font-size: 1.2rem;
-    padding: 0.2rem;
+input {
+  margin-top: 0.35rem;
+  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  outline: none;
 }
 
-button{
-    font-size: 1.2rem;
-    margin-top: 1.2rem;
-    padding: 0.2rem;
+input:focus {
+  border-color: #666;
+}
+
+button {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  border-radius: 10px;
+  background: #444;
+  color: white;
+  cursor: pointer;
+}
+
+.error-message {
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+  color: #b00020;
+}
+
+.backend-error {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #ffb4b4;
+  background: #fff2f2;
+  border-radius: 10px;
 }

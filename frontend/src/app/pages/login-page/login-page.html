@@ -10,10 +10,10 @@
       <label for="email">Email</label>
       <input
         (input)="clearMessages(); clearFieldError('email')"
-        type="email"
+        type="text"
         name="email"
         id="email"
-        placeholder="name@email.com"
+        placeholder="Email or username"
         required
         [maxlength]="30"
         [(ngModel)]="formData.email"
@@ -21,7 +21,7 @@
       />
 
       <div class="error-message" *ngIf="emailControl.touched && emailControl.hasError('maxlength')">
-        The email must not exceed 30 characters.
+        Email/username must not exceed 30 characters.
       </div>
 
       <div class="error-message" *ngIf="fieldErrors().email">
@@ -42,16 +42,10 @@
         #passwordControl="ngModel"
       />
 
-      <div
-        class="error-message"
-        *ngIf="passwordControl.touched && passwordControl.hasError('maxlength')"
-      >
+      <div class="error-message" *ngIf="passwordControl.touched && passwordControl.hasError('maxlength')">
         Password cannot be longer than 20 characters.
       </div>
-      <div
-        class="error-message"
-        *ngIf="passwordControl.touched && passwordControl.hasError('minlength')"
-      >
+      <div class="error-message" *ngIf="passwordControl.touched && passwordControl.hasError('minlength')">
         Password cannot be shorter than 8 characters.
       </div>
 
@@ -59,14 +53,12 @@
         {{ fieldErrors().password }}
       </div>
 
-      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+      <button type="submit" [disabled]="loginForm.invalid || loading()">
+        {{ loading() ? 'Logging in...' : 'Login' }}
+      </button>
 
       <div class="error-message backend-error" *ngIf="backendError()">
         {{ backendError() }}
-      </div>
-
-      <div class="success-message" *ngIf="successMessage()">
-        {{ successMessage() }}
       </div>
     </form>
   </div>

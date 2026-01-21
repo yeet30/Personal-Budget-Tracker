@@ -1,5 +1,5 @@
-import { Injectable, signal } from "@angular/core";
-import { UserService } from "./user-service";
+import { Injectable, signal } from '@angular/core';
+import { UserService } from './user-service';
 
 export type AuthUser = {
   user_id: number;
@@ -8,7 +8,7 @@ export type AuthUser = {
   role_id: number;
 };
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   user = signal<AuthUser | null>(null);
   loading = signal<boolean>(true);
@@ -22,6 +22,12 @@ export class AuthService {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  async login(emailOrUsername: string, password: string) {
+    const res: any = await this.userService.login(emailOrUsername, password);
+    this.user.set(res?.user ?? null);
+    return res;
   }
 
   async logout() {

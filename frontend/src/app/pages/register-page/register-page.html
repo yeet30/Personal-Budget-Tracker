@@ -7,7 +7,7 @@
 
   <div id="register-content">
     <form #RegisterForm="ngForm" (ngSubmit)="RegisterAttempt()">
-      <label for="username">User Name</label>
+      <label for="username">Username</label>
       <input
         (input)="clearMessages(); clearFieldError('username')"
         type="text"

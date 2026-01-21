@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { LoginForm, LoginSchema } from '../../form-validator';
-import { UserService } from '../../services/user-service';
 import { AuthService } from '../../services/auth-service';
 
 type LoginField = 'email' | 'password';
@@ -18,7 +17,6 @@ type LoginField = 'email' | 'password';
 })
 export class LoginPage {
   constructor(
-    private userService: UserService,
     private auth: AuthService,
     private router: Router,
   ) {}
@@ -31,11 +29,10 @@ export class LoginPage {
   fieldErrors = signal<Partial<Record<LoginField, string>>>({});
 
   backendError = signal<string | null>(null);
-  successMessage = signal<string | null>(null);
+  loading = signal<boolean>(false);
 
   clearMessages() {
     this.backendError.set(null);
-    this.successMessage.set(null);
   }
 
   clearAllFieldErrors() {
@@ -67,15 +64,24 @@ export class LoginPage {
     }
 
     try {
-      const res: any = await this.userService.login(this.formData.email, this.formData.password);
+      this.loading.set(true);
 
-      await this.auth.refreshMe();
+      const res: any = await this.auth.login(
+        this.formData.email,
+        this.formData.password
+      );
 
-      this.successMessage.set(res?.message ?? 'Login successful.');
+      const roleId = this.auth.user()?.role_id;
 
-      this.router.navigate(['/home']);
+      if (roleId === 2) {
+        await this.router.navigate(['/admin/users']);
+      } else {
+        await this.router.navigate(['/home']);
+      }
     } catch (err: any) {
       this.backendError.set(err?.error?.message ?? 'Invalid email or password.');
+    } finally {
+      this.loading.set(false);
     }
   }
 }
