@@ -1,0 +1,15 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Features</h1>
+    <p class="subtitle">
+      A quick overview of what Personal Budget Tracker currently supports.
+    </p>
+  </header>
+
+  <div class="grid">
+    <article class="card" *ngFor="let f of features">
+      <h2 class="card-title">{{ f.title }}</h2>
+      <p class="card-desc">{{ f.description }}</p>
+    </article>
+  </div>
+</section>

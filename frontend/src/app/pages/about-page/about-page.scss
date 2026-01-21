@@ -1,0 +1,61 @@
+.about {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 24px;
+}
+
+.about h1 {
+  margin-bottom: 12px;
+}
+
+.intro {
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 14px auto;
+  border: 3px solid rgba(0, 0, 0, 0.08);
+}
+
+.name {
+  margin: 0;
+  font-size: 22px;
+}
+
+.role {
+  margin: 6px 0 10px 0;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.desc {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+@media (max-width: 700px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

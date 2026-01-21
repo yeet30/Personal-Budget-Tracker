@@ -37,4 +37,12 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () => import('./pages/admin-page/admin-page').then((m) => m.AdminUsersPage),
   },
+  {
+    path: 'about',
+    loadComponent: () => import('./pages/about-page/about-page').then((m) => m.AboutPage),
+  },
+  {
+    path: 'features',
+    loadComponent: () => import('./pages/features-page/features-page').then((m) => m.FeaturesPage),
+  },
 ];
