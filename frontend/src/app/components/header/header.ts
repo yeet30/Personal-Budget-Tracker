@@ -20,8 +20,10 @@ export class Header {
   ) {}
 
   toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
+  if (this.auth.user()?.role_id === 2) return;
+  this.sidebarOpen = !this.sidebarOpen;
+}
+
 
   async onLogout() {
     await this.auth.logout();
