@@ -1,0 +1,105 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 999;
+}
+
+.sidebar {
+  position: fixed;
+  top: 10vh; /* matches your fixed header height */
+  left: 0;
+  height: 90vh;
+  width: 280px;
+  background: white;
+  border-right: 1px solid #ddd;
+  transform: translateX(-100%);
+  transition: transform 0.2s ease;
+  z-index: 1000;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+}
+
+.close-btn {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #aaa;
+  background: white;
+  cursor: pointer;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #aaa;
+  background: #eee;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.action-btn:hover {
+  background: #ddd;
+}
+
+.search {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.4rem;
+  border: 1px solid #aaa;
+  font-size: 1rem;
+}
+
+.budget-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.budget-list li {
+  margin-bottom: 0.5rem;
+}
+
+.hint {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.budget-btn {
+  display: block;
+  width: 6rem;
+  background: white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.budget-btn:hover {
+  background: #ddd;
+}
+
+.budget-btn:focus {
+  background: #999;
+  outline: none;
+}

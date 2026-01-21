@@ -1,20 +1,31 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { Router, RouterLink } from "@angular/router";
-import { AuthService } from "../../services/auth-service";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
+import { Sidebar } from '../sidebar/sidebar';
 
 @Component({
-  selector: "app-header",
+  selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: "./header.html",
-  styleUrl: "./header.scss",
+  imports: [CommonModule, RouterLink, Sidebar],
+  templateUrl: './header.html',
+  styleUrl: './header.scss',
 })
 export class Header {
-  constructor(public auth: AuthService, private router: Router) {}
+  sidebarOpen = false;
+
+  constructor(
+    public auth: AuthService,
+    private router: Router,
+  ) {}
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
 
   async onLogout() {
     await this.auth.logout();
-    this.router.navigate(["/login"]);
+    this.sidebarOpen = false;
+    this.router.navigate(['/login']);
   }
 }

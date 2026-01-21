@@ -1,0 +1,38 @@
+<div class="backdrop" *ngIf="open" (click)="toggleClose()"></div>
+
+<aside class="sidebar" [class.open]="open">
+  <div class="sidebar-header">
+    <h2>Budgets</h2>
+    <button type="button" class="close-btn" (click)="toggleClose()">X</button>
+  </div>
+
+  <ng-container *ngIf="!auth.user()">
+    <p class="hint">Log in to manage budgets.</p>
+  </ng-container>
+
+  <ng-container *ngIf="auth.user()">
+    <button type="button" class="action-btn" (click)="goToNewBudget()">New Budget</button>
+
+    <input
+      class="search"
+      type="text"
+      placeholder="Find a budget..."
+      [(ngModel)]="query"
+    />
+
+    <ul class="budget-list">
+      <li *ngFor="let b of filteredBudgets">
+        <button
+          type="button"
+          class="budget-btn"
+          [class.active]="b.budget_id === selectedBudgetId"
+          (click)="goToBudget(b.budget_id)"
+        >
+          {{ b.name }}
+        </button>
+      </li>
+    </ul>
+
+    <p class="hint" *ngIf="filteredBudgets.length === 0">No budgets found.</p>
+  </ng-container>
+</aside>

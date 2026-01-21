@@ -1,55 +1,40 @@
 <header>
   <nav>
     <div class="header-row">
-      <div id="logo-and-title">
-        <img src="/favicon.ico" alt="🪙" />
-        <h1>Personal Budget Tracker</h1>
+      <div class="left-group">
+        <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+
+        <div id="logo-and-title">
+          <img src="/favicon.ico" alt="🪙" />
+          <h1>Personal Budget Tracker</h1>
+        </div>
       </div>
+
       <ul>
         <ng-container *ngIf="!auth.user()">
-          <li>
-            <a class="tab-button" href="#home-section">Home</a>
-          </li>
-          <li>
-            <a class="tab-button" routerLink="/features">Features</a>
-          </li>
-          <li>
-            <a class="tab-button" routerLink="/about">About Us</a>
-          </li>
-          <li>
-            <a class="tab-button" routerLink="/login">Login</a>
-          </li>
-          <li>
-            <a class="tab-button" routerLink="/register">Register</a>
-          </li>
+          <li><a class="tab-button" routerLink="/home">Home</a></li>
+          <li><a class="tab-button" routerLink="/features">Features</a></li>
+          <li><a class="tab-button" routerLink="/about">About Us</a></li>
+          <li><a class="tab-button" routerLink="/login">Login</a></li>
+          <li><a class="tab-button" routerLink="/register">Register</a></li>
         </ng-container>
 
         <ng-container *ngIf="auth.user()?.role_id === 2">
-          <li>
-            <a class="tab-button" routerLink="/admin/users">Admin</a>
-          </li>
-          <li>
-            <button type="button" class="tab-button" (click)="onLogout()">Logout</button>
-          </li>
+          <li><a class="tab-button" routerLink="/admin/users">Admin</a></li>
+          <li><button class="tab-button" (click)="onLogout()">Logout</button></li>
           <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
         </ng-container>
 
         <ng-container *ngIf="auth.user() && auth.user()?.role_id !== 2">
-          <li>
-            <a class="tab-button" routerLink="/home">Home</a>
-          </li>
-          <li>
-            <a class="tab-button" routerLink="/features">Features</a>
-          </li>
-          <li>
-            <a class="tab-button" routerLink="/about">About Us</a>
-          </li>
-          <li>
-            <button type="button" class="tab-button" (click)="onLogout()">Logout</button>
-          </li>
+          <li><a class="tab-button" routerLink="/home">Home</a></li>
+          <li><a class="tab-button" routerLink="/features">Features</a></li>
+          <li><a class="tab-button" routerLink="/about">About Us</a></li>
+          <li><a class="tab-button" (click)="onLogout()">Logout</a></li>
           <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
         </ng-container>
       </ul>
     </div>
   </nav>
 </header>
+
+<app-sidebar [open]="sidebarOpen" (close)="sidebarOpen = false"></app-sidebar>

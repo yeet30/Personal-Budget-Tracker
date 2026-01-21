@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { guestGuard } from './guards/auth-guards';
+import { authGuard } from './guards/auth-guards';
 import { adminGuard } from './guards/admin-guard';
 import { userGuard } from './guards/user-guard';
 
@@ -13,14 +13,14 @@ export const routes: Routes = [
   {
     path: 'login',
     pathMatch: 'full',
-    canActivate: [guestGuard],
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/login-page/login-page').then((m) => m.LoginPage),
   },
 
   {
     path: 'register',
     pathMatch: 'full',
-    canActivate: [guestGuard],
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/register-page/register-page').then((m) => m.RegisterPage),
   },
 
@@ -45,4 +45,15 @@ export const routes: Routes = [
     path: 'features',
     loadComponent: () => import('./pages/features-page/features-page').then((m) => m.FeaturesPage),
   },
+  /*{
+    path: 'budgets/new',
+    loadComponent: () =>
+      import('./pages/budget-new-page/budget-new-page').then((m) => m.BudgetNewPage),
+      canActivate: [authGuard]
+  },
+  {
+    path: 'budgets/:id',
+    loadComponent: () => import('./pages/budget-page/budget-page').then((m) => m.BudgetPage),
+    canActivate: [authGuard]
+  },*/
 ];
