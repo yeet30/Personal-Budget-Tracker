@@ -2,7 +2,7 @@
 -- Author:        david
 -- Caption:       New Model
 -- Project:       Name of the project
--- Changed:       2026-01-04 13:21
+-- Changed:       2026-01-21 20:20
 -- Created:       2025-11-16 20:15
 
 -- Schema: mydb
@@ -60,14 +60,10 @@ CREATE TABLE "budget_user"(
 CREATE INDEX "budget_user.user" ON "budget_user" ("user_id");
 CREATE TABLE "category"(
   "category_id" INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT NULL,
-  "budget_id" INTEGER NOT NULL,
   "name" VARCHAR(100) NOT NULL,
   "description" VARCHAR(255) DEFAULT NULL,
-  "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY("budget_id")
-    REFERENCES "budget"("budget_id")
+  "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX "category.index2" ON "category" ("budget_id");
 CREATE TABLE "transaction"(
   "transaction_id" INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT NULL,
   "category_id" INTEGER NOT NULL,
@@ -92,12 +88,14 @@ CREATE INDEX "transaction.index4" ON "transaction" ("user_id");
 CREATE TABLE "budget_goal"(
   "goal_id" INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT NULL,
   "budget_id" INTEGER NOT NULL,
-  "category_id" INTEGER DEFAULT NULL,
+  "category_id" INTEGER NOT NULL,
   "limit_amount" DECIMAL DEFAULT NULL,
   "goal_amount" DECIMAL DEFAULT NULL,
   "period" TEXT NOT NULL CHECK("period" IN('WEEKLY', 'MONTHLY', 'YEARLY')),
   FOREIGN KEY("budget_id")
-    REFERENCES "budget"("budget_id"),
+    REFERENCES "budget"("budget_id")
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
   FOREIGN KEY("category_id")
     REFERENCES "category"("category_id")
 );
