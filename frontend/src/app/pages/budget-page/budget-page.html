@@ -1,0 +1,39 @@
+<section id="budget-section">
+  <div class="budget-wrap">
+    <div class="toolbar">
+      <h1 *ngIf="budget(); else titleFallback">{{ budget()!.name }}</h1>
+      <ng-template #titleFallback><h1>Budget</h1></ng-template>
+    </div>
+    <div class="invite" *ngIf="budget()?.type === 'OWNER'">
+      <h3>Invite user</h3>
+
+      <input type="text" placeholder="Email or username" [(ngModel)]="inviteIdentifier" />
+      <button type="button" (click)="inviteUser()">Add</button>
+
+      <div class="error" *ngIf="inviteError">{{ inviteError }}</div>
+      <div class="success" *ngIf="inviteSuccess">{{ inviteSuccess }}</div>
+    </div>
+
+    <div *ngIf="loading()" class="info">Loading…</div>
+    <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
+
+    <div *ngIf="!loading() && budget()" class="card">
+      <div class="row">
+        <div><strong>Currency:</strong> {{ budget()!.currency }}</div>
+        <div><strong>Period:</strong> {{ budget()!.start_date }} → {{ budget()!.end_date }}</div>
+      </div>
+
+      <div class="row">
+        <div><strong>Created:</strong> {{ budget()!.created_at || '—' }}</div>
+        <div><strong>Your role:</strong> {{ getMyRoleLabel() }}</div>
+      </div>
+
+      <hr />
+
+      <p>This is where transactions, categories, and summary will go.</p>
+      <p>
+        Next steps you can add here: “Add transaction”, “Invite contributor”, “View members”, etc.
+      </p>
+    </div>
+  </div>
+</section>

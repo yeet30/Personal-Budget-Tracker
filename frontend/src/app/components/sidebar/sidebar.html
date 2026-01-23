@@ -1,38 +1,72 @@
-<div class="backdrop" *ngIf="open" (click)="toggleClose()"></div>
+<div class="backdrop" *ngIf="open" (click)="onClose()"></div>
 
 <aside class="sidebar" [class.open]="open">
   <div class="sidebar-header">
-    <h2>Budgets</h2>
-    <button type="button" class="close-btn" (click)="toggleClose()">X</button>
+    <h3>Budgets</h3>
+    <button type="button" class="close-btn" (click)="onClose()">✕</button>
   </div>
 
-  <ng-container *ngIf="!auth.user()">
-    <p class="hint">Log in to manage budgets.</p>
-  </ng-container>
+  <div class="sidebar-body">
+    <div *ngIf="!auth.user()" class="muted">Please log in to see your budgets.</div>
 
-  <ng-container *ngIf="auth.user()">
-    <button type="button" class="action-btn" (click)="goToNewBudget()">New Budget</button>
+    <div *ngIf="auth.user()">
+      <button class="primary-btn" type="button" (click)="openCreate()">+ New budget</button>
 
-    <input
-      class="search"
-      type="text"
-      placeholder="Find a budget..."
-      [(ngModel)]="query"
-    />
+      <div *ngIf="loading()">Loading…</div>
+      <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
 
-    <ul class="budget-list">
-      <li *ngFor="let b of filteredBudgets">
-        <button
-          type="button"
-          class="budget-btn"
-          [class.active]="b.budget_id === selectedBudgetId"
-          (click)="goToBudget(b.budget_id)"
-        >
-          {{ b.name }}
-        </button>
-      </li>
-    </ul>
+      <ul class="budget-list" *ngIf="!loading() && !error()">
+        <li *ngFor="let b of budgets()" class="budget-item">
+          <button type="button" class="budget-link" (click)="goToBudget(b.budget_id)">
+            {{ b.name }}
+          </button>
+        </li>
 
-    <p class="hint" *ngIf="filteredBudgets.length === 0">No budgets found.</p>
-  </ng-container>
+        <li *ngIf="budgets().length === 0" class="muted">No budgets yet.</li>
+      </ul>
+
+      <div *ngIf="isCreateOpen()" class="create-wrap">
+        <div class="create-title">Create budget</div>
+
+        <label>Name</label>
+        <input
+          [ngModel]="createForm().name"
+          (ngModelChange)="patchCreateForm({ name: $event })"
+          type="text"
+        />
+        <div class="error" *ngIf="createErrors().name">{{ createErrors().name }}</div>
+
+        <label>Currency</label>
+        <input
+          [ngModel]="createForm().currency"
+          (ngModelChange)="patchCreateForm({ currency: $event })"
+          type="text"
+        />
+        <div class="error" *ngIf="createErrors().currency">{{ createErrors().currency }}</div>
+
+        <label>Start date</label>
+        <input
+          [ngModel]="createForm().start_date"
+          (ngModelChange)="patchCreateForm({ start_date: $event })"
+          type="date"
+        />
+        <div class="error" *ngIf="createErrors().start_date">{{ createErrors().start_date }}</div>
+
+        <label>End date</label>
+        <input
+          [ngModel]="createForm().end_date"
+          (ngModelChange)="patchCreateForm({ end_date: $event })"
+          type="date"
+        />
+        <div class="error" *ngIf="createErrors().end_date">{{ createErrors().end_date }}</div>
+
+        <div class="error" *ngIf="createBackendError()">{{ createBackendError() }}</div>
+
+        <div class="create-actions">
+          <button type="button" class="secondary-btn" (click)="closeCreate()">Cancel</button>
+          <button type="button" class="primary-btn" (click)="submitCreate()">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </aside>

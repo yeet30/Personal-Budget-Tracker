@@ -19,7 +19,8 @@ export class App implements OnInit {
   constructor(
     public auth: AuthService,
     private router: Router,
-  ) {}
+  ) {  this.auth.refreshMe();
+}
 
   async ngOnInit() {
     await this.auth.refreshMe();

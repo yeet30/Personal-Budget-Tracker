@@ -1,0 +1,62 @@
+<div class="backdrop" *ngIf="open" (click)="onClose()"></div>
+
+<div class="modal" *ngIf="open">
+  <div class="modal-header">
+    <h2>Create new budget</h2>
+    <button type="button" class="close-btn" (click)="onClose()">X</button>
+  </div>
+
+  <div class="modal-body">
+    <label for="bname">Budget name</label>
+    <input
+      id="bname"
+      name="bname"
+      type="text"
+      [maxlength]="50"
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event); clearField('name')"
+      placeholder="e.g. January budget"
+    />
+    <div class="error-message" *ngIf="fieldErrors().name">{{ fieldErrors().name }}</div>
+
+    <label for="currency">Currency</label>
+    <input
+      id="currency"
+      name="currency"
+      type="text"
+      maxlength="3"
+      [ngModel]="currency()"
+      (ngModelChange)="currency.set($event); clearField('currency')"
+      placeholder="EUR"
+    />
+    <div class="error-message" *ngIf="fieldErrors().currency">{{ fieldErrors().currency }}</div>
+
+    <label for="start">Start date</label>
+    <input
+      id="start"
+      name="start"
+      type="date"
+      [ngModel]="start_date()"
+      (ngModelChange)="start_date.set($event); clearField('start_date')"
+    />
+    <div class="error-message" *ngIf="fieldErrors().start_date">{{ fieldErrors().start_date }}</div>
+
+    <label for="end">End date</label>
+    <input
+      id="end"
+      name="end"
+      type="date"
+      [ngModel]="end_date()"
+      (ngModelChange)="end_date.set($event); clearField('end_date')"
+    />
+    <div class="error-message" *ngIf="fieldErrors().end_date">{{ fieldErrors().end_date }}</div>
+
+    <div class="error-message backend-error" *ngIf="backendError()">
+      {{ backendError() }}
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" (click)="submit()">Create</button>
+  </div>
+</div>

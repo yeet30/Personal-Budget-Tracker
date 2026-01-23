@@ -7,10 +7,10 @@
 
 .sidebar {
   position: fixed;
-  top: 10vh; /* matches your fixed header height */
+  top: 10vh;
   left: 0;
   height: 90vh;
-  width: 280px;
+  width: 10%;
   background: white;
   border-right: 1px solid #ddd;
   transform: translateX(-100%);
@@ -65,11 +65,6 @@
   font-size: 1rem;
 }
 
-.budget-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 0 0;
-}
 
 .budget-list li {
   margin-bottom: 0.5rem;
@@ -102,4 +97,29 @@
 .budget-btn:focus {
   background: #999;
   outline: none;
+}
+
+.budget-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.budget-item {
+  margin: 0.25rem 0;
+}
+
+.budget-link {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.25rem;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.budget-link:hover {
+  text-decoration: underline;
 }
