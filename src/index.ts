@@ -15,6 +15,7 @@ import { verifyPassword } from "./helpers/password-utils";
 import { registerUserApi } from "./api/user-api";
 import { registerAuthApi } from "./api/auth-api";
 import { registerAdminApi } from "./api/admin-api";
+import { registerBudgetApi } from "./api/budget-api";
 
 async function main() {
   const app = express();
@@ -122,6 +123,7 @@ async function main() {
   registerUserApi(ctx);
   registerAuthApi(ctx, passport);
   registerAdminApi(ctx);
+  registerBudgetApi({app, db, requireAuth});
 
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
