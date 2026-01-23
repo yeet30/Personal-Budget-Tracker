@@ -9,6 +9,7 @@ import {
   normalizeEmail,
   normalizeUsername,
 } from '../../validation-rules';
+import type { RoleRow } from '../../services/user-service';
 
 type EditModel = {
   email: string;
@@ -27,6 +28,7 @@ type EditModel = {
 export class AdminUsersPage implements OnInit {
   users = signal<AdminUserRow[]>([]);
   loading = signal<boolean>(true);
+  roles = signal<RoleRow[]>([]);
 
   error = signal<string | null>(null);
   success = signal<string | null>(null);
@@ -54,6 +56,7 @@ export class AdminUsersPage implements OnInit {
   constructor(private userService: UserService) {}
 
   async ngOnInit() {
+    await this.loadRoles();
     await this.loadUsers();
   }
 
@@ -124,6 +127,22 @@ export class AdminUsersPage implements OnInit {
     }
   }
 
+  async loadRoles() {
+    try {
+      const res = await this.userService.adminGetRoles();
+      this.roles.set(res.roles ?? []);
+
+      if (this.roles().length > 0) {
+        const defaultId = this.roles()[0].role_id;
+        this.createForm.set({ ...this.createForm(), role_id: defaultId });
+        this.editForm.set({ ...this.editForm(), role_id: defaultId });
+      }
+    } catch (e: any) {
+      this.error.set(e?.error?.message ?? 'Failed to load roles.');
+      this.roles.set([]);
+    }
+  }
+
   async createUser() {
     this.clearMessages();
     this.fieldErrors.set({});
@@ -180,17 +199,37 @@ export class AdminUsersPage implements OnInit {
       this.error.set(e?.error?.message ?? 'Failed to delete user.');
     }
   }
+  onCreateRoleChange(roleId: any) {
+    this.createForm.set({
+      email: this.createForm().email,
+      username: this.createForm().username,
+      password: this.createForm().password,
+      role_id: Number(roleId),
+    });
+  }
+
+  onEditRoleChange(roleId: any) {
+    this.editForm.set({
+      email: this.editForm().email,
+      username: this.editForm().username,
+      password: this.editForm().password,
+      role_id: Number(roleId),
+    });
+  }
+  
+  setCreateRole(roleId: any) {
+    const id = Number(roleId);
+    const curr = this.createForm();
+    this.createForm.set({ ...curr, role_id: id });
+  }
+
+  setEditRole(roleId: any) {
+    const id = Number(roleId);
+    const curr = this.editForm();
+    this.editForm.set({ ...curr, role_id: id });
+  }
 
   roleLabel(roleId: number) {
-    switch (roleId) {
-      case 1:
-        return 'User';
-      case 2:
-        return 'Admin';
-      case 3:
-        return 'Control User';
-      default:
-        return 'Unknown';
-    }
+    return this.roles().find((r) => r.role_id === roleId)?.name ?? 'Unknown';
   }
 }

@@ -36,10 +36,10 @@
 
       <label>
         Role
-        <select [(ngModel)]="createForm().role_id" (change)="clearMessages()">
-          <option [ngValue]="1">User</option>
-          <option [ngValue]="2">Admin</option>
-          <option [ngValue]="3">Control User</option>
+        <select [ngModel]="createForm().role_id" (ngModelChange)="setCreateRole($event)">
+          <option *ngFor="let r of roles()" [ngValue]="r.role_id">
+            {{ r.name }}
+          </option>
         </select>
       </label>
     </div>
@@ -79,10 +79,10 @@
 
           <td *ngIf="editingId() !== u.user_id">{{ roleLabel(u.role_id) }}</td>
           <td *ngIf="editingId() === u.user_id">
-            <select [(ngModel)]="editForm().role_id">
-              <option [ngValue]="1">User</option>
-              <option [ngValue]="2">Admin</option>
-              <option [ngValue]="3">Control user</option>
+            <select [ngModel]="editForm().role_id" (ngModelChange)="onEditRoleChange($event)">
+              <option *ngFor="let r of roles()" [ngValue]="r.role_id">
+                {{ r.name }}
+              </option>
             </select>
           </td>
 

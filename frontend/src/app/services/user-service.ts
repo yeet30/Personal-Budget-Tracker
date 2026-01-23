@@ -9,6 +9,11 @@ export type AdminUserRow = {
   username: string;
   role_id: number;
 };
+
+export type RoleRow = {
+  role_id: number;
+  name: string;
+};
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private http: HttpClient) {}
@@ -59,6 +64,19 @@ export class UserService {
     try {
       return await firstValueFrom(
         this.http.get<{ users: AdminUserRow[] }>('/api/admin/users', {
+          withCredentials: true,
+        }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async adminGetRoles(): Promise<{ roles: RoleRow[] }> {
+    try {
+      return await firstValueFrom(
+        this.http.get<{ roles: RoleRow[] }>('/api/admin/roles', {
           withCredentials: true,
         }),
       );
