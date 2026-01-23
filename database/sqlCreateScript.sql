@@ -38,24 +38,14 @@ CREATE TABLE "budget"(
   "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE "budget_user"(
-  "budget_user_id" INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT NULL,
+  "budget_user_id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "user_id" INTEGER NOT NULL,
   "budget_id" INTEGER NOT NULL,
-  "type" TEXT NOT NULL CHECK("type" IN('OWNER', 'CONTRIBUTOR')),
-  CONSTRAINT "budget"
-    UNIQUE("budget_id","user_id"),
-  CONSTRAINT "user_id_UNIQUE"
-    UNIQUE("user_id"),
-  CONSTRAINT "budget_id_UNIQUE"
-    UNIQUE("budget_id"),
-  CONSTRAINT "user"
-    FOREIGN KEY("user_id")
-    REFERENCES "user"("user_id")
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT "budget"
-    FOREIGN KEY("budget_id")
-    REFERENCES "budget"("budget_id")
+  "type" TEXT NOT NULL CHECK("type" IN ('OWNER', 'CONTRIBUTOR')),
+  CONSTRAINT "budget_user_unique" UNIQUE("budget_id","user_id"),
+  FOREIGN KEY("user_id") REFERENCES "user"("user_id")
+    ON DELETE RESTRICT ON UPDATE RESTRICT,
+  FOREIGN KEY("budget_id") REFERENCES "budget"("budget_id")
 );
 CREATE INDEX "budget_user.user" ON "budget_user" ("user_id");
 CREATE TABLE "category"(
