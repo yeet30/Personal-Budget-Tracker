@@ -191,4 +191,32 @@ export function registerBudgetApi(params: {
       return res.status(500).json({ message: "Internal server error." });
     }
   });
+  app.get("/api/budgets/:id/users", requireAuth, async (req: any, res) => {
+  try {
+    const userId = req.user.user_id;
+    const budgetId = Number(req.params.id);
+    if (!Number.isFinite(budgetId)) return res.status(400).json({ message: "Invalid id." });
+
+    const member = await db.get(
+      `SELECT 1 FROM budget_user WHERE budget_id = ? AND user_id = ? LIMIT 1`,
+      [budgetId, userId],
+    );
+    if (!member) return res.status(403).json({ message: "Access denied." });
+
+    const users = await db.all(
+      `SELECT u.user_id, u.email, u.username, bu.type
+       FROM budget_user bu
+       INNER JOIN "user" u ON u.user_id = bu.user_id
+       WHERE bu.budget_id = ?
+       ORDER BY CASE bu.type WHEN 'OWNER' THEN 0 ELSE 1 END, u.username ASC`,
+      [budgetId],
+    );
+
+    return res.json({ users });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 }

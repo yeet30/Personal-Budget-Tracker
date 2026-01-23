@@ -18,6 +18,8 @@ export class BudgetPage implements OnInit {
   inviteIdentifier = '';
   inviteError = '';
   inviteSuccess = '';
+  members = signal<any[]>([]);
+  membersError = signal<string | null>(null);
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -40,6 +42,7 @@ export class BudgetPage implements OnInit {
 
       try {
         const res: any = await this.budgetService.getBudget(id);
+        await this.loadMembers(id);
         this.budget.set(res?.budget ?? null);
 
         if (!res?.budget) {
@@ -56,10 +59,12 @@ export class BudgetPage implements OnInit {
   backToHome() {
     this.router.navigate(['/home']);
   }
+
   getMyRoleLabel(): string {
     const b: any = this.budget();
     return b?.type || 'contributor';
   }
+
   async inviteUser() {
     this.inviteError = '';
     this.inviteSuccess = '';
@@ -73,6 +78,17 @@ export class BudgetPage implements OnInit {
       this.inviteIdentifier = '';
     } catch (e: any) {
       this.inviteError = e?.error?.message ?? 'Failed to add user.';
+    }
+  }
+
+  async loadMembers(budgetId: number) {
+    try {
+      const res = await this.budgetService.listBudgetUsers(budgetId);
+      this.members.set(res.users ?? []);
+      this.membersError.set(null);
+    } catch (e: any) {
+      this.members.set([]);
+      this.membersError.set(e?.error?.message ?? 'Failed to load members.');
     }
   }
 }

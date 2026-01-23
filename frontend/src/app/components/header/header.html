@@ -26,7 +26,8 @@
         </ng-container>
 
         <ng-container *ngIf="auth.user()?.role_id === 2">
-          <li><a class="tab-button" routerLink="/admin/users">Admin</a></li>
+          <li><a class="tab-button" routerLink="/admin/users">Users</a></li>
+          <li><a class="tab-button" routerLink="/admin/categories">Categories</a></li>
           <li><button class="tab-button" (click)="onLogout()">Logout</button></li>
           <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
         </ng-container>

@@ -12,7 +12,6 @@ export type BudgetRow = {
   type: 'OWNER' | 'CONTRIBUTOR';
 };
 
-
 @Injectable({ providedIn: 'root' })
 export class BudgetService {
   constructor(private http: HttpClient) {}
@@ -21,6 +20,19 @@ export class BudgetService {
     try {
       return await firstValueFrom(
         this.http.get<{ budgets: BudgetRow[] }>('/api/budgets', {
+          withCredentials: true,
+        }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+  
+  async listBudgetUsers(budgetId: number): Promise<{ users: any[] }> {
+    try {
+      return await firstValueFrom(
+        this.http.get<{ users: any[] }>(`/api/budgets/${budgetId}/users`, {
           withCredentials: true,
         }),
       );

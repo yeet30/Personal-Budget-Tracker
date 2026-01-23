@@ -29,6 +29,14 @@
       </div>
 
       <hr />
+      <hr />
+
+      <h3>Members</h3>
+      <div class="error" *ngIf="membersError()">{{ membersError() }}</div>
+
+      <ul *ngIf="!membersError()">
+        <li *ngFor="let m of members()">{{ m.username }} ({{ m.type }})</li>
+      </ul>
 
       <p>This is where transactions, categories, and summary will go.</p>
       <p>
