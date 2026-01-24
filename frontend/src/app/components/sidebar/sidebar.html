@@ -2,7 +2,7 @@
 
 <aside class="sidebar" [class.open]="open">
   <div class="sidebar-header">
-    <h3>Budgets</h3>
+    <h3>My Budgets</h3>
     <button type="button" class="close-btn" (click)="onClose()">✕</button>
   </div>
 
@@ -10,7 +10,6 @@
     <div *ngIf="!auth.user()" class="muted">Please log in to see your budgets.</div>
 
     <div *ngIf="auth.user()">
-      <button class="primary-btn" type="button" (click)="openCreate()">+ New budget</button>
 
       <div *ngIf="loading()">Loading…</div>
       <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
@@ -21,52 +20,11 @@
             {{ b.name }}
           </button>
         </li>
-
         <li *ngIf="budgets().length === 0" class="muted">No budgets yet.</li>
       </ul>
 
-      <div *ngIf="isCreateOpen()" class="create-wrap">
-        <div class="create-title">Create budget</div>
+      <button class="primary-btn" type="button" (click)="openInitializer()">+ New budget</button>
 
-        <label>Name</label>
-        <input
-          [ngModel]="createForm().name"
-          (ngModelChange)="patchCreateForm({ name: $event })"
-          type="text"
-        />
-        <div class="error" *ngIf="createErrors().name">{{ createErrors().name }}</div>
-
-        <label>Currency</label>
-        <input
-          [ngModel]="createForm().currency"
-          (ngModelChange)="patchCreateForm({ currency: $event })"
-          type="text"
-        />
-        <div class="error" *ngIf="createErrors().currency">{{ createErrors().currency }}</div>
-
-        <label>Start date</label>
-        <input
-          [ngModel]="createForm().start_date"
-          (ngModelChange)="patchCreateForm({ start_date: $event })"
-          type="date"
-        />
-        <div class="error" *ngIf="createErrors().start_date">{{ createErrors().start_date }}</div>
-
-        <label>End date</label>
-        <input
-          [ngModel]="createForm().end_date"
-          (ngModelChange)="patchCreateForm({ end_date: $event })"
-          type="date"
-        />
-        <div class="error" *ngIf="createErrors().end_date">{{ createErrors().end_date }}</div>
-
-        <div class="error" *ngIf="createBackendError()">{{ createBackendError() }}</div>
-
-        <div class="create-actions">
-          <button type="button" class="secondary-btn" (click)="closeCreate()">Cancel</button>
-          <button type="button" class="primary-btn" (click)="submitCreate()">Create</button>
-        </div>
-      </div>
     </div>
   </div>
 </aside>

@@ -1,7 +1,7 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.1);
   z-index: 999;
 }
 
@@ -10,13 +10,13 @@
   top: 10vh;
   left: 0;
   height: 90vh;
-  width: 10%;
+  width: 20%;
   background: white;
   border-right: 1px solid #ddd;
   transform: translateX(-100%);
   transition: transform 0.2s ease;
   z-index: 1000;
-  padding: 1rem;
+  padding: 2rem;
   overflow: auto;
 }
 
@@ -30,9 +30,9 @@
   align-items: center;
   margin-bottom: 1rem;
 
-  h2 {
+  h3 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 }
 

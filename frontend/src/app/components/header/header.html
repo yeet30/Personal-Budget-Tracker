@@ -17,26 +17,26 @@
       </div>
 
       <ul>
-        <ng-container *ngIf="!auth.user()">
-          <li><a class="tab-button" routerLink="/">Home</a></li>
-          <li><a class="tab-button" routerLink="/features">Features</a></li>
-          <li><a class="tab-button" routerLink="/about">About Us</a></li>
+        <ng-container *ngIf="!auth.user()"> <!--Guest User-->
+          <li><a class="tab-button" href="#home-section">Home</a></li>
+          <li><a class="tab-button" href="#features-section">Features</a></li>
+          <li><a class="tab-button" href="#about-section">About Us</a></li>
           <li><a class="tab-button" routerLink="/login">Login</a></li>
           <li><a class="tab-button" routerLink="/register">Register</a></li>
         </ng-container>
 
-        <ng-container *ngIf="auth.user()?.role_id === 2">
+        <ng-container *ngIf="auth.user()?.role_id === 2"> <!--Admin-->
           <li><a class="tab-button" routerLink="/admin/users">Users</a></li>
           <li><a class="tab-button" routerLink="/admin/categories">Categories</a></li>
           <li><button class="tab-button" (click)="onLogout()">Logout</button></li>
           <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
         </ng-container>
 
-        <ng-container *ngIf="auth.user() && auth.user()?.role_id !== 2">
+        <ng-container *ngIf="auth.user() && auth.user()?.role_id !== 2"> <!--Logged in User-->
           <li><a class="tab-button" routerLink="/home">Home</a></li>
           <li><a class="tab-button" routerLink="/features">Features</a></li>
           <li><a class="tab-button" routerLink="/about">About Us</a></li>
-          <li><button class="tab-button" (click)="onLogout()">Logout</button></li>
+          <li><a class="tab-button" (click)="onLogout()">Logout</a></li>
           <li class="nav-user">Hello, {{ auth.user()!.username }}</li>
         </ng-container>
       </ul>
