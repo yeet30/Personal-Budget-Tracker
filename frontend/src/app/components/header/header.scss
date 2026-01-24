@@ -65,15 +65,15 @@ ul {
   text-decoration: none;
   border: none;
   cursor: pointer;
-}
 
-.tab-button:hover {
-  background: #ddd;
-}
+  &:hover{
+    background: #ddd;
+  }
 
-.tab-button:focus {
-  background: #999;
-  outline: none;
+  &:focus{
+    background: #999;
+    outline: none;
+  }
 }
 
 .nav-user {

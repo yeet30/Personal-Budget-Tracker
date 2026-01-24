@@ -4,10 +4,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BudgetService, BudgetRow } from '../../services/budget-service';
 import { FormsModule } from '@angular/forms';
 
+import { Graphs } from '../../components/cards/graphs/graphs';
+import { Overview } from '../../components/cards/overview/overview';
+import { Members } from '../../components/cards/members/members';
+import { Transactions } from '../../components/cards/transactions/transactions';
+
+type Card = 'overview' | 'transactions' | 'members' | 'graphs';
+
 @Component({
   selector: 'app-budget-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule,
+    FormsModule, 
+    Graphs, 
+    Overview,
+    Members,
+    Transactions],
   templateUrl: './budget-page.html',
   styleUrl: './budget-page.scss',
 })
@@ -54,6 +66,12 @@ export class BudgetPage implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  selectedCard = signal<Card>('overview');
+
+  setCard(card: Card){
+    this.selectedCard.set(card)
   }
 
   backToHome() {

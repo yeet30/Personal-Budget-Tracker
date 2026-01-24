@@ -15,7 +15,7 @@
       <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
 
       <ul class="budget-list" *ngIf="!loading() && !error()">
-        <li *ngFor="let b of budgets()" class="budget-item">
+        <li *ngFor="let b of budgets().slice().reverse()" class="budget-item">
           <button type="button" class="budget-link" (click)="goToBudget(b.budget_id)">
             {{ b.name }}
           </button>

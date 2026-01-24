@@ -1,15 +1,72 @@
 #budget-section {
   width: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
 }
 
 .budget-wrap {
-  width: 100%;
-  padding: 24px;
+  width: 80%;
+  padding: 2rem;
   box-sizing: border-box;
+
+  h1{
+    font-size: 2rem;
+  }
+}
+
+#navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+
+  ul{
+    display: flex;
+    flex-direction: row;
+    
+    li{
+      margin-left: 0px;
+      list-style-type: none;
+    }
+  }
+
+  span{
+    margin: 0;
+    width: 70%;
+
+    hr{
+      margin: 0;
+      height: 4px;
+      border-radius: 2rem;
+    }
+  }
+}
+
+.nav-button{
+  transition: 100ms;
+  color: rgb(67, 43, 123);
+  text-decoration: underline;
+  height: 80%;
+  padding: 0.5rem 2rem;
+  width: 8rem;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover{
+    background-color: rgba(255, 0, 255, 0.1);  
+  }
+  &:focus{
+    background-color: rgba(255, 0, 255, 0.5); 
+    outline: none;
+  }
+  &.active{
+    border-bottom: 2px solid currentColor;
+    text-decoration: none;
+  }
 }
 
 .toolbar {
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .card {

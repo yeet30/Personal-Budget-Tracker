@@ -4,18 +4,41 @@
       <h1 *ngIf="budget(); else titleFallback">{{ budget()!.name }}</h1>
       <ng-template #titleFallback><h1>Budget</h1></ng-template>
     </div>
-    <div class="invite" *ngIf="budget()?.type === 'OWNER'">
-      <h3>Invite user</h3>
 
-      <input type="text" placeholder="Email or username" [(ngModel)]="inviteIdentifier" />
-      <button type="button" (click)="inviteUser()">Add</button>
+    <nav id="navigation">
+      <ul>
+        <li><a class="nav-button" 
+          [class.active]="selectedCard() === 'overview'" 
+          (click)="setCard('overview')">Overview</a>
+        </li>
+        <li><a class="nav-button" 
+          [class.active]="selectedCard() === 'transactions'" 
+          (click)="setCard('transactions')">Transactions</a>
+        </li>
+        <li><a class="nav-button" 
+          [class.active]="selectedCard() === 'members'" 
+          (click)="setCard('members')">Members</a>
+        </li>
+        <li><a class="nav-button" 
+          [class.active]="selectedCard() === 'graphs'" 
+          (click)="setCard('graphs')">Graphs</a>
+        </li>
+      </ul>
 
-      <div class="error" *ngIf="inviteError">{{ inviteError }}</div>
-      <div class="success" *ngIf="inviteSuccess">{{ inviteSuccess }}</div>
-    </div>
+      <span>
+        <hr>
+      </span>
+    </nav>
 
     <div *ngIf="loading()" class="info">Loading…</div>
     <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
+
+    <div class="cards">
+      @if(selectedCard() === 'overview') {<app-overview-card />}
+      @if(selectedCard() === 'transactions') {<app-transactions-card />}
+      @if(selectedCard() === 'members') {<app-members-card />}
+      @if(selectedCard() === 'graphs') {<app-graphs-card />}
+    </div>
 
     <div *ngIf="!loading() && budget()" class="card">
       <div class="row">
@@ -37,6 +60,16 @@
       <ul *ngIf="!membersError()">
         <li *ngFor="let m of members()">{{ m.username }} ({{ m.type }})</li>
       </ul>
+
+      <div class="invite" *ngIf="budget()?.type === 'OWNER'">
+        <h3>Invite user</h3>
+
+        <input type="text" placeholder="Email or username" [(ngModel)]="inviteIdentifier" />
+        <button type="button" (click)="inviteUser()">Add</button>
+
+        <div class="error" *ngIf="inviteError">{{ inviteError }}</div>
+        <div class="success" *ngIf="inviteSuccess">{{ inviteSuccess }}</div>
+      </div>
 
       <p>This is where transactions, categories, and summary will go.</p>
       <p>
