@@ -86,9 +86,12 @@ export class Sidebar {
   }
 
   openInitializer() {
-    this.dialog.open(BudgetInitializer, {
-      width: '400px',
-      disableClose: false
+    const dialogRef = this.dialog.open(BudgetInitializer, {
+    disableClose: false
+  });
+
+    dialogRef.afterClosed().subscribe((success) => {
+      if (success) this.onClose();
     });
   }
 

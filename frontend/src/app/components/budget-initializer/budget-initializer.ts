@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -11,6 +12,7 @@ import { BudgetService } from '../../services/budget-service';
   imports: [
     FormsModule,
     MatDialogModule,
+    CommonModule
   ],
   templateUrl: './budget-initializer.html',
   styleUrl: './budget-initializer.scss',
@@ -22,12 +24,6 @@ export class BudgetInitializer {
     private router: Router,
     private dialogRef: MatDialogRef<BudgetInitializer>
   ){}
-
-  closeInitializer() {
-    this.clearInitializerMessages();
-    this.initializerErrors.set({});
-    this.dialogRef.close();
-  }
 
   initializerForm = signal<{
     name: string;
@@ -57,6 +53,12 @@ export class BudgetInitializer {
     this.clearInitializerMessages();
     this.initializerErrors.set({});
     this.initializerForm.set({ ...this.initializerForm(), ...patch });
+  }
+
+  closeInitializer(success:boolean = false) {
+    this.clearInitializerMessages();
+    this.initializerErrors.set({});
+    this.dialogRef.close(success);
   }
 
   async submitInitializer() {
@@ -93,7 +95,7 @@ export class BudgetInitializer {
         end_date: payload.end_date,
       });
 
-      this.closeInitializer();
+      this.closeInitializer(true);
 
       const createdId = res?.budget?.budget_id;
       if (createdId) {

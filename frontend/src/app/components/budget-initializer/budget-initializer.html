@@ -2,14 +2,14 @@
     <div class="popup">
         <h1 class="initializer-title">Create a budget</h1>
 
-        <form>
+        <div class="form">
             <label>Name</label>
             <input
                 [ngModel]="initializerForm().name"
                 (ngModelChange)="patchInitializerForm({ name: $event })"
                 type="text"
             />
-            <div class="error" *ngIf="initializerErrors().name">{{ initializerErrors().name }}</div>
+            <div class="error-message" *ngIf="initializerErrors().name">{{ initializerErrors().name }}</div>
 
             <label>Currency</label>
             <input
@@ -17,7 +17,7 @@
                 (ngModelChange)="patchInitializerForm({ currency: $event })"
                 type="text"
             />
-            <div class="error" *ngIf="initializerErrors().currency">{{ initializerErrors().currency }}</div>
+            <div class="error-message" *ngIf="initializerErrors().currency">{{ initializerErrors().currency }}</div>
 
             <label>Start date</label>
             <input
@@ -25,7 +25,7 @@
                 (ngModelChange)="patchInitializerForm({ start_date: $event })"
                 type="date"
             />
-            <div class="error" *ngIf="initializerErrors().start_date">{{ initializerErrors().start_date }}</div>
+            <div class="error-message" *ngIf="initializerErrors().start_date">{{ initializerErrors().start_date }}</div>
 
             <label>End date</label>
             <input
@@ -33,15 +33,15 @@
                 (ngModelChange)="patchInitializerForm({ end_date: $event })"
                 type="date"
             />
-            <div class="error" *ngIf="initializerErrors().end_date">{{ initializerErrors().end_date }}</div>
+            <div class="error-message" *ngIf="initializerErrors().end_date">{{ initializerErrors().end_date }}</div>
 
-            <div class="error" *ngIf="initializerBackendError()">{{ initializerBackendError() }}</div>
+            <div class="error-message" *ngIf="initializerBackendError()">{{ initializerBackendError() }}</div>
 
             <div class="initializer-actions">
                 <button type="button" class="secondary-btn" (click)="closeInitializer()">Cancel</button>
                 <button type="button" class="primary-btn" (click)="submitInitializer()">Create</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
     
