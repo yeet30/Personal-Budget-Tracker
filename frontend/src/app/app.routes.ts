@@ -47,6 +47,14 @@ export const routes: Routes = [
     path: 'features',
     loadComponent: () => import('./pages/features-page/features-page').then((m) => m.FeaturesPage),
   },
+
+  {
+    path: 'notifications',
+    pathMatch: 'full',
+    canActivate: [userGuard],
+    loadComponent: () =>
+      import('./pages/notifications-page/notifications-page').then((m) => m.NotificationsPage),
+  },
   {
     path: 'budgets/:id',
     loadComponent: () => import('./pages/budget-page/budget-page').then((m) => m.BudgetPage),
