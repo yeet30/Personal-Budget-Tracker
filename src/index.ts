@@ -16,6 +16,8 @@ import { registerUserApi } from "./api/user-api";
 import { registerAuthApi } from "./api/auth-api";
 import { registerAdminApi } from "./api/admin-api";
 import { registerBudgetApi } from "./api/budget-api";
+import { registerInviteApi } from "./api/invite-api";
+import { registerNotificationApi } from "./api/notification-api";
 
 async function main() {
   const app = express();
@@ -41,7 +43,7 @@ async function main() {
       resave: false,
       saveUninitialized: false,
       store: new SQLiteStore({ db: "sessions.sqlite3", dir: databaseFolder }),
-      cookie: { maxAge: 86400000 }, // 1 day
+      cookie: { maxAge: 86400000 },
     }),
   );
 
@@ -124,6 +126,8 @@ async function main() {
   registerAuthApi(ctx, passport);
   registerAdminApi(ctx);
   registerBudgetApi({app, db, requireAuth});
+  registerInviteApi({ app, db, requireAuth });
+  registerNotificationApi({ app, db, requireAuth });
 
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 

@@ -8,7 +8,7 @@ import {
   normalizeUsername,
 } from "../helpers/validation-rules";
 
-const ALLOWED_ROLE_IDS = [1, 2, 3] as const; // user, admin, control user
+const ALLOWED_ROLE_IDS = [1, 2, 3] as const;
 
 export function registerAdminApi({
   app,

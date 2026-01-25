@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import type { Database } from "sqlite";
+import { createNotification } from "../helpers/notification-utils";
 
 function isIsoDate(v: string) {
   return /^\d{4}-\d{2}-\d{2}$/.test(v);
@@ -171,19 +172,43 @@ export function registerBudgetApi(params: {
           .json({ message: "User is already in this budget." });
       }
 
-      await db.run(
-        `INSERT INTO budget_user (budget_id, user_id, type)
-       VALUES (?, ?, 'CONTRIBUTOR')`,
+      const existingInvite = await db.get(
+        `SELECT 1 FROM budget_invite WHERE budget_id = ? AND invited_user_id = ? AND status = 'PENDING' LIMIT 1`,
         [budgetId, user.user_id],
       );
+      if (existingInvite) {
+        return res
+          .status(409)
+          .json({ message: "Invite already sent to this user." });
+      }
+
+      const inviteInsert = await db.run(
+        `INSERT INTO budget_invite (budget_id, invited_user_id, invited_by_user_id, status)
+         VALUES (?, ?, ?, 'PENDING')`,
+        [budgetId, user.user_id, ownerId],
+      );
+      const inviteId = inviteInsert.lastID;
+
+      const budget = await db.get<{ name: string }>(
+        `SELECT name FROM budget WHERE budget_id = ?`,
+        [budgetId],
+      );
+
+      await createNotification(db, {
+        user_id: user.user_id,
+        type: "BUDGET_INVITE",
+        title: "Budget invite",
+        message: `You have been invited to join the budget "${budget?.name ?? 'Unknown'}"`,
+        entity_type: "invite",
+        entity_id: inviteId,
+      });
 
       return res.status(201).json({
-        message: "User added to budget.",
-        added: {
+        message: "Invite sent to user.",
+        invited: {
           user_id: user.user_id,
           email: user.email,
           username: user.username,
-          type: "CONTRIBUTOR",
         },
       });
     } catch (err) {
