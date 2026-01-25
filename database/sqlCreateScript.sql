@@ -103,4 +103,37 @@ CREATE TABLE "audit_log"(
     REFERENCES "user"("user_id")
 );
 CREATE INDEX "audit_log.audit_id" ON "audit_log" ("user_id");
+
+CREATE TABLE IF NOT EXISTS notification (
+  notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT NOT NULL,                -- 'TRANSACTION_ADDED' | 'BUDGET_INVITE' | ...
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  entity_type TEXT,                  -- 'budget' | 'transaction' | 'invite'
+  entity_id INTEGER,                 -- points to budget_id / transaction_id / invite_id
+  is_read INTEGER NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_notification_user_read
+ON notification(user_id, is_read, created_at);
+
+CREATE TABLE IF NOT EXISTS budget_invite (
+  invite_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  budget_id INTEGER NOT NULL,
+  invited_user_id INTEGER NOT NULL,
+  invited_by_user_id INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PENDING',  -- 'PENDING' | 'ACCEPTED' | 'DECLINED'
+  created_at DATETIME NOT NULL DEFAULT (datetime('now')),
+  responded_at DATETIME,
+  UNIQUE(budget_id, invited_user_id),
+  FOREIGN KEY (budget_id) REFERENCES budget(budget_id),
+  FOREIGN KEY (invited_user_id) REFERENCES user(user_id),
+  FOREIGN KEY (invited_by_user_id) REFERENCES user(user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_invite_user_status
+ON budget_invite(invited_user_id, status, created_at);
 COMMIT;
