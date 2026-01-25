@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BudgetRow } from '../../../services/budget-service';
 import { BudgetService } from '../../../services/budget-service';
@@ -25,7 +25,7 @@ export class Members {
   @Input({ required: true })
   routeId: number = 0;
 
-  constructor(private budgetService: BudgetService){}
+  constructor(private budgetService: BudgetService, private cdr: ChangeDetectorRef){}
 
   async inviteUser() {
     this.inviteError = '';
@@ -33,9 +33,11 @@ export class Members {
 
     try {
       await this.budgetService.addUserToBudget(this.routeId, this.inviteIdentifier);
-      this.inviteSuccess = 'User added!';
+      this.inviteSuccess = 'Invite sent!';
+      this.cdr.detectChanges();
     } catch (e: any) {
-      this.inviteError = e?.error?.message ?? 'Failed to add user.';
+      this.inviteError = e?.error?.message ?? 'Failed to send invite.';
+      this.cdr.detectChanges();
     }
   }
 
