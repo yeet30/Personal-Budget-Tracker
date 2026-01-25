@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BudgetService, BudgetRow } from '../../services/budget-service';
@@ -26,12 +26,10 @@ type Card = 'overview' | 'transactions' | 'members' | 'graphs';
 export class BudgetPage implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
-  budget = signal<(BudgetRow & { created_at?: string }) | null>(null);
-  inviteIdentifier = '';
-  inviteError = '';
-  inviteSuccess = '';
+  budget = signal<BudgetRow | null>(null);
   members = signal<any[]>([]);
   membersError = signal<string | null>(null);
+  routeId = signal<number>(0);
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -51,6 +49,7 @@ export class BudgetPage implements OnInit {
         this.loading.set(false);
         return;
       }
+      this.routeId.set(id)
 
       try {
         const res: any = await this.budgetService.getBudget(id);
@@ -83,21 +82,6 @@ export class BudgetPage implements OnInit {
     return b?.type || 'contributor';
   }
 
-  async inviteUser() {
-    this.inviteError = '';
-    this.inviteSuccess = '';
-
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) return;
-
-    try {
-      await this.budgetService.addUserToBudget(id, this.inviteIdentifier);
-      this.inviteSuccess = 'User added!';
-      this.inviteIdentifier = '';
-    } catch (e: any) {
-      this.inviteError = e?.error?.message ?? 'Failed to add user.';
-    }
-  }
 
   async loadMembers(budgetId: number) {
     try {

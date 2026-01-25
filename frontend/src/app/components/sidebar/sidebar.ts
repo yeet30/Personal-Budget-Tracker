@@ -7,16 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth-service';
 import { BudgetService } from '../../services/budget-service';
 import { BudgetInitializer } from '../budget-initializer/budget-initializer';
-
-export type BudgetRow = {
-  budget_id: number;
-  name: string;
-  currency: string;
-  start_date: string;
-  end_date: string | null;
-  created_at: string;
-  type: 'OWNER' | 'CONTRIBUTOR';
-};
+import { BudgetRow } from '../../services/budget-service';
 
 @Component({
   selector: 'app-sidebar',
