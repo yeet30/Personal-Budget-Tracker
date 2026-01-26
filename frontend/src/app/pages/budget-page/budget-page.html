@@ -45,12 +45,5 @@
       [routeId]="routeId()"/>
       <app-graphs-card *ngIf="selectedCard() === 'graphs'"/>
     </div>
-
-    <div *ngIf="!loading() && budget()" class="card">
-      <p>This is where transactions, categories, and summary will go.</p>
-      <p>
-        Next steps you can add here: “Add transaction”, “Invite contributor”, “View members”, etc.
-      </p>
-    </div>
   </div>
 </section>

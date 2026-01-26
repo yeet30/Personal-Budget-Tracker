@@ -1,0 +1,37 @@
+<div id="page-wrapper">
+
+    <h2 *ngIf="!auth.user()">Please log in to see this page.</h2>
+    <div *ngIf="loading()">Loading…</div>
+
+    <section *ngIf="auth.user() && !loading()" id="page-content">
+
+        <h1>Welcome back {{auth.user()!.username}}!</h1>
+
+        <div *ngIf="loading()">Loading…</div>
+        <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
+
+        <div *ngIf="!has_budgets()" id="instructions">
+            <div class="card">
+                <h2>Let's get started</h2>
+                <p>You don't have any budgets yet. To see and create your budgets click the menu button on the top left corner.</p>
+            </div>
+        </div>
+
+        <div *ngIf="has_budgets()" id="starter">
+            <div class="card">
+                <h2 *ngIf="budgets().length === 1">You have only one budget.</h2>
+                <h2 *ngIf="budgets().length > 1">You have {{budgets().length}} budgets.</h2>
+                <h3>Current total balance from all your budgets combined: {{total_balance()}}</h3>
+            </div>
+            <div class="card">
+                <h2>Your budget's current balances</h2>
+                <ul *ngIf="!loading() && !error()">
+                    <li *ngFor="let b of budgets().slice().reverse()">
+                        "{{b.name}}", current balance: 100 {{b.currency}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+</div>
