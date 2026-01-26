@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 export type BudgetRow = {
@@ -62,7 +62,8 @@ export class BudgetService {
     name:string;
   }): Promise<any>{
     try{
-      return await this.http.delete("/api/budgets/:id", payload)
+      const params = new HttpParams().set('name', payload.name);
+      return await this.http.delete("/api/budgets", { params })
     }
     catch (e) {
       const err = e as HttpErrorResponse;

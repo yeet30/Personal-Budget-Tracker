@@ -1,4 +1,4 @@
-import { Component, Input, signal  } from '@angular/core';
+import { Component, Input, signal, WritableSignal } from '@angular/core';
 import { BudgetRow, BudgetService } from '../../../services/budget-service';
 
 
@@ -10,14 +10,17 @@ import { BudgetRow, BudgetService } from '../../../services/budget-service';
 })
 export class Overview {
   @Input({ required: true })
-  budget!: () => BudgetRow;
+  budget!: WritableSignal<BudgetRow | null>;
   error = signal<string>('');
 
 
   constructor(private budgetSerive:BudgetService){}
 
   async deleteBudget(){
-    await this.budgetSerive.deleteBudget({name: this.budget().name})
+    const budgetValue = this.budget();
+    if (budgetValue) {
+      await this.budgetSerive.deleteBudget({name: budgetValue.name})
+    }
   }
 
   getMyRoleLabel(): string {
