@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { CategoryRow } from './user-service';
+
+export type { CategoryRow };
 
 export type TransactionRow = {
   transaction_id: number;
@@ -14,12 +17,6 @@ export type TransactionRow = {
   description: string | null;
   created_at: string;
   username: string;
-};
-
-export type CategoryRow = {
-  category_id: number;
-  name: string;
-  description: string | null;
 };
 
 @Injectable({

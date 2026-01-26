@@ -41,3 +41,16 @@ body {
 
   box-sizing: border-box;
 }
+
+/* CSS Variables for consistent theming */
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --border-color: #ddd;
+  --card-bg: #fff;
+  --input-bg: #fff;
+  --text-color: #333;
+  --text-secondary: #666;
+  --button-bg: #f8f9fa;
+  --button-hover: #e9ecef;
+}

@@ -14,6 +14,13 @@ export type RoleRow = {
   role_id: number;
   name: string;
 };
+
+export type CategoryRow = {
+  category_id: number;
+  name: string;
+  description: string | null;
+  created_at: string;
+};
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private http: HttpClient) {}
@@ -127,6 +134,67 @@ export class UserService {
     try {
       return await firstValueFrom(
         this.http.delete(`/api/admin/users/${userId}`, {
+          withCredentials: true,
+        }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async adminGetCategories(): Promise<{ categories: CategoryRow[] }> {
+    try {
+      return await firstValueFrom(
+        this.http.get<{ categories: CategoryRow[] }>('/api/admin/categories', {
+          withCredentials: true,
+        }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async adminCreateCategory(payload: {
+    name: string;
+    description?: string;
+  }): Promise<any> {
+    try {
+      return await firstValueFrom(
+        this.http.post('/api/admin/categories', payload, {
+          withCredentials: true,
+        }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async adminUpdateCategory(
+    categoryId: number,
+    payload: {
+      name?: string;
+      description?: string;
+    },
+  ): Promise<any> {
+    try {
+      return await firstValueFrom(
+        this.http.put(`/api/admin/categories/${categoryId}`, payload, {
+          withCredentials: true,
+        }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async adminDeleteCategory(categoryId: number): Promise<any> {
+    try {
+      return await firstValueFrom(
+        this.http.delete(`/api/admin/categories/${categoryId}`, {
           withCredentials: true,
         }),
       );

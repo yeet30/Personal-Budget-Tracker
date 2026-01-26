@@ -1,14 +1,12 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TransactionService } from '../../../services/transaction-service';
+import { TransactionService, CategoryRow } from '../../../services/transaction-service';
 
 type side = 'income' | 'expense';
-export type IncomeCategory = 'salary' | 'income from self employment' | 'allowance' | 'government aid' | 'savings' | 'addition';
-export type ExpenseCategory = 'rent' | 'insurance' | 'groceries' | 'bills' | 'dinning' | 'cinema' | 'travel';
 
 export type Transaction = {
-  type: IncomeCategory | ExpenseCategory;
+  type: string; // Will be category name
   amount: number;
   stable: boolean;
 }
@@ -26,10 +24,14 @@ export class Transactions implements OnInit {
   @Input({ required: true })
   currency!: string;
 
+  categories = signal<CategoryRow[]>([]);
+  loadingCategories = signal<boolean>(false);
+
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
     this.loadTransactions();
+    this.loadCategories();
   }
 
   async loadTransactions() {
@@ -41,16 +43,30 @@ export class Transactions implements OnInit {
     }
   }
 
+  async loadCategories() {
+    try {
+      this.loadingCategories.set(true);
+      const res = await this.transactionService.getCategories();
+      this.categories.set(res.categories);
+    } catch (error) {
+      console.error('Failed to load categories:', error);
+    } finally {
+      this.loadingCategories.set(false);
+    }
+  }
+
   selected_side = signal<side>('income');
 
-  income_category = signal<IncomeCategory>('salary')
+  income_category_id = signal<number | null>(null);
   income_amount = signal<string>('');
-  savings_category = signal<IncomeCategory>('savings')
+
+  savings_category_id = signal<number | null>(null);
   savings_amount = signal<string>('');
 
-  cost_category = signal<ExpenseCategory>('rent')
+  cost_category_id = signal<number | null>(null);
   cost_amount = signal<string>('');
-  leisure_category = signal<ExpenseCategory>('dinning')
+
+  leisure_category_id = signal<number | null>(null);
   leisure_amount = signal<string>('');
 
   transaction_array = signal<Transaction[]>([]);
@@ -62,8 +78,14 @@ export class Transactions implements OnInit {
     const amount = parseInt(this.income_amount());
     if (!amount || amount <= 0) return;
 
+    const categoryId = this.income_category_id();
+    if (!categoryId) return;
+
+    const category = this.categories().find(c => c.category_id === categoryId);
+    if (!category) return;
+
     const income: Transaction = {
-      type: this.income_category(),
+      type: category.name,
       amount: amount,
       stable: true
     }
@@ -72,7 +94,7 @@ export class Transactions implements OnInit {
 
     try {
       await this.transactionService.createTransaction(this.budgetId, {
-        category: this.income_category(),
+        category: category.name,
         amount: amount,
         currency: this.currency,
         type: 'INCOME',
@@ -80,6 +102,7 @@ export class Transactions implements OnInit {
         description: 'Stable income'
       });
       this.income_amount.set('');
+      this.income_category_id.set(null);
       await this.loadTransactions();
     } catch (error) {
       console.error('Failed to save transaction:', error);
@@ -90,8 +113,14 @@ export class Transactions implements OnInit {
     const amount = parseInt(this.savings_amount());
     if (!amount || amount <= 0) return;
 
+    const categoryId = this.savings_category_id();
+    if (!categoryId) return;
+
+    const category = this.categories().find(c => c.category_id === categoryId);
+    if (!category) return;
+
     const income: Transaction = {
-      type: this.savings_category(),
+      type: category.name,
       amount: amount,
       stable: false
     }
@@ -100,7 +129,7 @@ export class Transactions implements OnInit {
 
     try {
       await this.transactionService.createTransaction(this.budgetId, {
-        category: this.savings_category(),
+        category: category.name,
         amount: amount,
         currency: this.currency,
         type: 'INCOME',
@@ -108,6 +137,7 @@ export class Transactions implements OnInit {
         description: 'Savings'
       });
       this.savings_amount.set('');
+      this.savings_category_id.set(null);
       await this.loadTransactions();
     } catch (error) {
       console.error('Failed to save transaction:', error);
@@ -118,8 +148,14 @@ export class Transactions implements OnInit {
     const amount = parseInt(this.cost_amount());
     if (!amount || amount <= 0) return;
 
+    const categoryId = this.cost_category_id();
+    if (!categoryId) return;
+
+    const category = this.categories().find(c => c.category_id === categoryId);
+    if (!category) return;
+
     const cost: Transaction = {
-      type: this.cost_category(),
+      type: category.name,
       amount: amount*-1,
       stable: true
     }
@@ -128,7 +164,7 @@ export class Transactions implements OnInit {
 
     try {
       await this.transactionService.createTransaction(this.budgetId, {
-        category: this.cost_category(),
+        category: category.name,
         amount: amount,
         currency: this.currency,
         type: 'EXPENSE',
@@ -136,6 +172,7 @@ export class Transactions implements OnInit {
         description: 'Fixed cost'
       });
       this.cost_amount.set('');
+      this.cost_category_id.set(null);
       await this.loadTransactions();
     } catch (error) {
       console.error('Failed to save transaction:', error);
@@ -146,8 +183,14 @@ export class Transactions implements OnInit {
     const amount = parseInt(this.leisure_amount());
     if (!amount || amount <= 0) return;
 
+    const categoryId = this.leisure_category_id();
+    if (!categoryId) return;
+
+    const category = this.categories().find(c => c.category_id === categoryId);
+    if (!category) return;
+
     const cost: Transaction = {
-      type: this.leisure_category(),
+      type: category.name,
       amount: amount*-1,
       stable: false
     }
@@ -156,7 +199,7 @@ export class Transactions implements OnInit {
 
     try {
       await this.transactionService.createTransaction(this.budgetId, {
-        category: this.leisure_category(),
+        category: category.name,
         amount: amount,
         currency: this.currency,
         type: 'EXPENSE',
@@ -164,6 +207,7 @@ export class Transactions implements OnInit {
         description: 'Leisure'
       });
       this.leisure_amount.set('');
+      this.leisure_category_id.set(null);
       await this.loadTransactions();
     } catch (error) {
       console.error('Failed to save transaction:', error);
