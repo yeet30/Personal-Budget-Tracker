@@ -37,7 +37,10 @@
       <app-overview-card 
       *ngIf="selectedCard() === 'overview'" 
       [budget]="budget"/>
-      <app-transactions-card *ngIf="selectedCard() === 'transactions'"/>
+      <app-transactions-card 
+      *ngIf="selectedCard() === 'transactions'"
+      [budgetId]="budget()!.budget_id"
+      [currency]="budget()!.currency"/>
       <app-members-card *ngIf="selectedCard() === 'members'"
       [budget]="budget"
       [members]="members()"
