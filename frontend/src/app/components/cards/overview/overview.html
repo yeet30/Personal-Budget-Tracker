@@ -3,6 +3,38 @@
     <div><strong>Period:</strong> {{ budget()!.start_date }} → {{ budget()!.end_date }}</div>
     <div><strong>Created:</strong> {{ budget()!.created_at || '—' }}</div>
     <div><strong>Your role:</strong> {{ getMyRoleLabel() }}</div>
-    <div><strong>Current amount of money:</strong></div>
-    <div><strong>Projected amount of money by the end of the period:</strong></div>
+    <div><strong>Total Income:</strong> {{ getTotalIncome() }} {{ budget()!.currency }}</div>
+    <div><strong>Total Expenses:</strong> {{ getTotalExpense() }} {{ budget()!.currency }}</div>
+    <div><strong>Net Amount:</strong> {{ getNetAmount() }} {{ budget()!.currency }}</div>
+
+    <div *ngIf="loadingTransactions()">Loading transactions...</div>
+    <div *ngIf="!loadingTransactions() && transactions().length === 0">No transactions yet.</div>
+    <div *ngIf="!loadingTransactions() && transactions().length > 0">
+        <h4>All Transactions</h4>
+        <div class="transactions-table">
+            <div class="transaction-header">
+                <span>Date</span>
+                <span>User</span>
+                <span>Category</span>
+                <span>Type</span>
+                <span>Amount</span>
+                <span>Description</span>
+                <span *ngIf="canEditAnyTransaction()">Actions</span>
+            </div>
+            <div class="transaction-row" *ngFor="let t of transactions()">
+                <span>{{ t.date }}</span>
+                <span>{{ t.username }}</span>
+                <span>{{ t.category_name }}</span>
+                <span [class]="t.type.toLowerCase()">{{ t.type }}</span>
+                <span [class]="t.type === 'INCOME' ? 'income-amount' : 'expense-amount'">
+                    {{ t.type === 'INCOME' ? '+' : '-' }}{{ t.amount }} {{ t.currency }}
+                </span>
+                <span>{{ t.description || '—' }}</span>
+                <span *ngIf="canEditAnyTransaction()" class="actions">
+                    <button *ngIf="canEditTransaction(t)" (click)="editTransaction(t)" class="edit-btn">Edit</button>
+                    <button *ngIf="canEditTransaction(t)" (click)="deleteTransaction(t)" class="delete-btn">Delete</button>
+                </span>
+            </div>
+        </div>
+    </div>
 </div>
