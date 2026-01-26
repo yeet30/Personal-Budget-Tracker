@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule,FormsModule],
   templateUrl: './members.html',
-  styleUrl: './members.scss',
+  styleUrl: '../cards-common.scss',
 })
 export class Members {
   inviteError = '';
