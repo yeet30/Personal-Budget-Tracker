@@ -474,4 +474,36 @@ export function registerAdminApi({
       return res.status(500).json({ message: "Internal server error." });
     }
   });
+
+  app.get("/api/control/budgets", requireAuth, async (_req, res) => {
+    try {
+      const budgets = await db.all(
+        `SELECT b.*, u.username as owner_username
+         FROM budget b
+         JOIN budget_user bu ON bu.budget_id = b.budget_id AND bu.type = 'OWNER'
+         JOIN user u ON u.user_id = bu.user_id
+         ORDER BY b.budget_id DESC`,
+      );
+      return res.json({ budgets });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  });
+
+  app.get("/api/control/transactions", requireAuth, async (_req, res) => {
+    try {
+      const transactions = await db.all(
+        `SELECT t.*, u.username, b.name as budget_name
+         FROM "transaction" t
+         JOIN user u ON u.user_id = t.user_id
+         JOIN budget b ON b.budget_id = t.budget_id
+         ORDER BY t.created_at DESC`,
+      );
+      return res.json({ transactions });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  });
 }
