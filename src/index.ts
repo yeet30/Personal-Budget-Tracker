@@ -3,6 +3,7 @@ import * as sqlite3 from "sqlite3";
 import { open, Database } from "sqlite";
 import path from "path";
 import fs from "fs";
+import { config }  from "dotenv";
 
 import session from "express-session";
 import SQLiteStoreFactory from "connect-sqlite3";
@@ -19,6 +20,11 @@ import { registerBudgetApi } from "./api/budget-api";
 import { registerInviteApi } from "./api/invite-api";
 import { registerNotificationApi } from "./api/notification-api";
 import { registerTransactionApi } from "./api/transaction-api";
+
+config();
+
+const APPNAME = process.env.APPNAME || "Personal Budget Tracker";
+const isProduction = process.env.NODE_ENV === "production";
 
 async function main() {
   const app = express();

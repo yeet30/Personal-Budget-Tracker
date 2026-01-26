@@ -41,6 +41,26 @@ export class FeaturesPage {
         "Admins can view, create, update, and delete users from an admin panel.",
     },
     {
+      title: "Budget Management",
+      description:
+        "Create, update, and delete budgets. Track your spending and savings goals.",
+    },
+    {
+      title: "Transaction Tracking",
+      description:
+        "Add, view, and manage transactions for each budget, including income and expenses.",
+    },
+    {
+      title: "Notifications",
+      description:
+        "Receive notifications for important events, such as budget changes or invitations.",
+    },
+    {
+      title: "User Invitations",
+      description:
+        "Invite other users to join budgets and collaborate on financial planning.",
+    },
+    {
       title: "Form Validation",
       description:
         "Client and server validation for email, username, and password rules with clear messages.",
