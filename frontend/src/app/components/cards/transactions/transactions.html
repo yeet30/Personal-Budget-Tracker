@@ -29,13 +29,15 @@
                         name="income-categories" 
                         id="income-categories"
                         required
-                        [ngModel] = "income_category()"
-                        (ngModelChange) = "income_category.set($event.toLowerCase())"
+                        [ngModel] = "income_category_id()"
+                        (ngModelChange) = "income_category_id.set($event)"
+                        [disabled]="loadingCategories()"
                         >
-                            <option value="salary">Salary</option>
-                            <option value="self-employment">Income from self employment</option>
-                            <option value="allowance">Allowance</option>
-                            <option value="aid">Government Aid</option>
+                            <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
+                            <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
+                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                                {{ category.name }}
+                            </option>
                         </select>
 
                         <label for="income-amount">Amount of money</label>
@@ -62,10 +64,15 @@
                         name="savings-categories" 
                         id="savings-categories"
                         required
-                        [ngModel] = "savings_category()"
-                        (ngModelChange) = "savings_category.set($event.toLowerCase())">
-                            <option value="savings">Savings</option>
-                            <option value="addition">Addition</option>
+                        [ngModel] = "savings_category_id()"
+                        (ngModelChange) = "savings_category_id.set($event)"
+                        [disabled]="loadingCategories()"
+                        >
+                            <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
+                            <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
+                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                                {{ category.name }}
+                            </option>
                         </select>
                         <label for="savings-amount">Amount of money</label>
                         <div class="money-input">
@@ -96,13 +103,15 @@
                         name="cost-categories" 
                         id="cost-categories"
                         required
-                        [ngModel] = "cost_category()"
-                        (ngModelChange) = "cost_category.set($event.toLowerCase())"
+                        [ngModel] = "cost_category_id()"
+                        (ngModelChange) = "cost_category_id.set($event)"
+                        [disabled]="loadingCategories()"
                         >
-                            <option value="rent">Rent</option>
-                            <option value="insurance">Insurance</option>
-                            <option value="groceries">Groceries</option>
-                            <option value="bills">Bills</option>
+                            <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
+                            <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
+                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                                {{ category.name }}
+                            </option>
                         </select>
 
                         <label for="cost-amount">Amount of money</label>
@@ -129,12 +138,15 @@
                         name="leisure-categories" 
                         id="leisure-categories"
                         required
-                        [ngModel] = "leisure_category()"
-                        (ngModelChange) = "leisure_category.set($event.toLowerCase())"
+                        [ngModel] = "leisure_category_id()"
+                        (ngModelChange) = "leisure_category_id.set($event)"
+                        [disabled]="loadingCategories()"
                         >
-                            <option value="dinning">Dinning</option>
-                            <option value="cinema">Cinema</option>
-                            <option value="travel">Travel</option>
+                            <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
+                            <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
+                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                                {{ category.name }}
+                            </option>
                         </select>
                         <label for="leisure-amount">Amount of money</label>
                         <div class="money-input">
@@ -155,7 +167,26 @@
             </section>
 
             <div id="display-section">
-                    <span id="header-span"><h3>Selected Statements</h3></span>
+                    <span id="header-span"><h3>Recent Transactions</h3></span>
+                    <div *ngIf="savedTransactions().length === 0" class="no-transactions">No saved transactions yet.</div>
+                    <div *ngIf="savedTransactions().length > 0" class="saved-transactions-table">
+                        <div class="transaction-header">
+                            <span>Date</span>
+                            <span>Category</span>
+                            <span>Type</span>
+                            <span>Amount</span>
+                        </div>
+                        <div class="transaction-row" *ngFor="let t of savedTransactions().slice(0, 10)">
+                            <span>{{ t.date }}</span>
+                            <span>{{ t.category_name }}</span>
+                            <span [class]="t.type.toLowerCase()">{{ t.type }}</span>
+                            <span [class]="t.type === 'INCOME' ? 'income-amount' : 'expense-amount'">
+                                {{ t.type === 'INCOME' ? '+' : '-' }}{{ t.amount }} {{ t.currency }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <h3>Current Session</h3>
                     <ul>
                         <li *ngFor="let t of transaction_array().slice().reverse()">
                             <span *ngIf="t.amount > 0" class="income-amount-span">+ $ {{t.amount}}</span>
