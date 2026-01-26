@@ -1,5 +1,6 @@
-import { Component, Input  } from '@angular/core';
-import { BudgetRow } from '../../../services/budget-service';
+import { Component, Input, signal  } from '@angular/core';
+import { BudgetRow, BudgetService } from '../../../services/budget-service';
+
 
 @Component({
   selector: 'app-overview-card',
@@ -9,7 +10,15 @@ import { BudgetRow } from '../../../services/budget-service';
 })
 export class Overview {
   @Input({ required: true })
-  budget!: () => BudgetRow | null;
+  budget!: () => BudgetRow;
+  error = signal<string>('');
+
+
+  constructor(private budgetSerive:BudgetService){}
+
+  async deleteBudget(){
+    await this.budgetSerive.deleteBudget({name: this.budget().name})
+  }
 
   getMyRoleLabel(): string {
     const b: any = this.budget();
