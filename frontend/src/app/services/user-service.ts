@@ -21,6 +21,30 @@ export type CategoryRow = {
   description: string | null;
   created_at: string;
 };
+
+export type controlBudgetRow = {
+  budget_id: number;
+  name: string;
+  currency: string;
+  start_date: string;
+  end_date: string;
+  owner_username: string;
+};
+
+export type controlTransactionRow = {
+  transaction_id: number;
+  category_id: number;
+  budget_id: number;
+  user_id: number;
+  amount: number;
+  currency: string;
+  type: 'INCOME' | 'EXPENSE';
+  date: string;
+  description: string | null;
+  created_at: string;
+  username: string;
+  budget_name: string;
+};
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private http: HttpClient) {}
@@ -197,6 +221,32 @@ export class UserService {
         this.http.delete(`/api/admin/categories/${categoryId}`, {
           withCredentials: true,
         }),
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async controlGetAllBudgets(): Promise<{ budgets: controlBudgetRow[] }> {
+    try {
+      return await firstValueFrom(
+        this.http.get<{ budgets: controlBudgetRow[] }>('/api/control/budgets', {
+          withCredentials: true,
+        })
+      );
+    } catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
+  async controlGetAllTransactions(): Promise<{ transactions: controlTransactionRow[] }> {
+    try {
+      return await firstValueFrom(
+        this.http.get<{ transactions: controlTransactionRow[] }>('/api/control/transactions', {
+          withCredentials: true,
+        })
       );
     } catch (e) {
       const err = e as HttpErrorResponse;

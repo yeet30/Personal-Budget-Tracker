@@ -4,7 +4,7 @@
       <div class="left-group">
         <button
           class="menu-btn"
-          *ngIf="auth.user() && auth.user()?.role_id !== 2"
+          *ngIf="auth.user() && auth.user()?.role_id !== 2 && auth.user()?.role_id !== 3"
           (click)="toggleSidebar()"
         >
           ☰
@@ -51,7 +51,7 @@
 </header>
 
 <app-sidebar
-  *ngIf="auth.user() && auth.user()?.role_id !== 2"
+  *ngIf="auth.user() && auth.user()?.role_id !== 2 && auth.user()?.role_id !== 3"
   [open]="sidebarOpen"
   (close)="sidebarOpen = false"
 ></app-sidebar>

@@ -10,26 +10,66 @@
         <div *ngIf="loading()">Loading…</div>
         <div *ngIf="!loading() && error()" class="error">{{ error() }}</div>
 
-        <div *ngIf="!has_budgets()" id="instructions">
+        <div *ngIf="isControl()">
             <div class="card">
-                <h2>Let's get started</h2>
-                <p>You don't have any budgets yet. To see and create your budgets click the menu button on the top left corner.</p>
+                <h2>All Budgets</h2>
+                <ul>
+                    <li *ngFor="let b of allBudgets()">
+                        "{{b.name}}" - Owner: {{b.owner_username}} - Currency: {{b.currency}} - Start: {{b.start_date}} - End: {{b.end_date}}
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h2>All Transactions</h2>
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Currency</th>
+                            <th>User</th>
+                            <th>Budget</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of allTransactions()">
+                            <td>{{ t.type }}</td>
+                            <td>{{ t.amount }}</td>
+                            <td>{{ t.currency }}</td>
+                            <td>{{ t.username }}</td>
+                            <td>{{ t.budget_name }}</td>
+                            <td>{{ t.date }}</td>
+                            <td>{{ t.description }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div *ngIf="has_budgets()" id="starter">
-            <div class="card">
-                <h2 *ngIf="budgets().length === 1">You have only one budget.</h2>
-                <h2 *ngIf="budgets().length > 1">You have {{budgets().length}} budgets.</h2>
-                <h3>Current total balance from all your budgets combined: {{total_balance()}}</h3>
+        <div *ngIf="!isControl()">
+            <div *ngIf="!has_budgets()" id="instructions">
+                <div class="card">
+                    <h2>Let's get started</h2>
+                    <p>You don't have any budgets yet. To see and create your budgets click the menu button on the top left corner.</p>
+                </div>
             </div>
-            <div class="card">
-                <h2>Your budget's current balances</h2>
-                <ul *ngIf="!loading() && !error()">
-                    <li *ngFor="let b of budgets().slice().reverse()">
-                        "{{b.name}}", current balance: 100 {{b.currency}}
-                    </li>
-                </ul>
+
+            <div *ngIf="has_budgets()" id="starter">
+                <div class="card">
+                    <h2 *ngIf="budgets().length === 1">You have only one budget.</h2>
+                    <h2 *ngIf="budgets().length > 1">You have {{budgets().length}} budgets.</h2>
+                    <h3>Current total balance from all your budgets combined: {{total_balance()}}</h3>
+                </div>
+                <div class="card">
+                    <h2>Your budget's current balances</h2>
+                    <ul *ngIf="!loading() && !error()">
+                        <li *ngFor="let b of budgets().slice().reverse()">
+                            "{{b.name}}", current balance: 100 {{b.currency}}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

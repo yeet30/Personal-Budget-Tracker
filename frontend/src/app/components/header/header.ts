@@ -37,7 +37,7 @@ export class Header implements OnInit, OnDestroy {
   }
 
   toggleSidebar() {
-    if (!this.auth.user() || this.auth.user()?.role_id === 2) return;
+    if (!this.auth.user() || this.auth.user()?.role_id === 2 || this.auth.user()?.role_id === 3) return;
     this.sidebarOpen = !this.sidebarOpen;
   }
 
