@@ -39,13 +39,6 @@ export const routes: Routes = [
   },
 
   {
-    path: 'admin/categories',
-    pathMatch: 'full',
-    canActivate: [adminGuard],
-    loadComponent: () => import('./pages/categories-page/categories-page').then((m) => m.AdminCategoriesPage),
-  },
-
-  {
     path: 'about',
     loadComponent: () => import('./pages/about-page/about-page').then((m) => m.AboutPage),
   },

@@ -18,7 +18,6 @@ import { registerAdminApi } from "./api/admin-api";
 import { registerBudgetApi } from "./api/budget-api";
 import { registerInviteApi } from "./api/invite-api";
 import { registerNotificationApi } from "./api/notification-api";
-import { registerTransactionApi } from "./api/transaction-api";
 
 async function main() {
   const app = express();
@@ -129,7 +128,6 @@ async function main() {
   registerBudgetApi({app, db, requireAuth});
   registerInviteApi({ app, db, requireAuth });
   registerNotificationApi({ app, db, requireAuth });
-  registerTransactionApi({ app, db, requireAuth });
 
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
