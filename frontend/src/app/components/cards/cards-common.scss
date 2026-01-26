@@ -7,9 +7,10 @@
   box-sizing: border-box;
 }
 
-#transactions-content{
+#delete-button-div{
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
 }
 
 h3 {
@@ -44,6 +45,10 @@ label{
     }
 }
 
+#transactions-content{
+    display: flex;
+    flex-direction: row;
+}
 
 #income-section {
     display: flex;

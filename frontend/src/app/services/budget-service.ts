@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 export type BudgetRow = {
@@ -57,6 +57,20 @@ export class BudgetService {
       throw { status: err.status, error: err.error, message: err.message };
     }
   }
+
+  async deleteBudget(payload:{
+    name:string;
+  }): Promise<any>{
+    try{
+      const params = new HttpParams().set('name', payload.name);
+      return await this.http.delete("/api/budgets", { params })
+    }
+    catch (e) {
+      const err = e as HttpErrorResponse;
+      throw { status: err.status, error: err.error, message: err.message };
+    }
+  }
+
 
   async addUserToBudget(budgetId: number, identifier: string): Promise<any> {
     try {

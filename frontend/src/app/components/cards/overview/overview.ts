@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+import { Component, Input, signal, WritableSignal } from '@angular/core';
+import { BudgetRow, BudgetService } from '../../../services/budget-service';
+
+=======
+>>>>>>> origin/budget-page-changes
 import { Component, Input, OnInit, signal } from '@angular/core';
 import { BudgetRow } from '../../../services/budget-service';
 import { TransactionService, TransactionRow, CategoryRow } from '../../../services/transaction-service';
@@ -5,6 +13,10 @@ import { AuthService } from '../../../services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../services/user-service';
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
+>>>>>>> origin/budget-page-changes
 
 @Component({
   selector: 'app-overview-card',
@@ -14,7 +26,62 @@ import { UserService } from '../../../services/user-service';
 })
 export class Overview implements OnInit {
   @Input({ required: true })
-  budget!: () => BudgetRow | null;
+  budget!: WritableSignal<BudgetRow | null>;
+  error = signal<string>('');
+
+
+  constructor(private budgetSerive:BudgetService){}
+
+  async deleteBudget(){
+    const budgetValue = this.budget();
+    if (budgetValue) {
+      await this.budgetSerive.deleteBudget({name: budgetValue.name})
+    }
+  }
+
+  transactions = signal<TransactionRow[]>([]);
+  loadingTransactions = signal(false);
+  categories = signal<CategoryRow[]>([]);
+
+  editingId = signal<number | null>(null);
+  editForm = signal({
+    category_id: 0,
+    amount: '',
+    type: 'INCOME' as 'INCOME' | 'EXPENSE',
+    date: '',
+    description: '',
+  });
+
+  constructor(private transactionService: TransactionService, private authService: AuthService, private userService: UserService) {}
+
+  ngOnInit() {
+    this.loadTransactions();
+    this.loadCategories();
+  }
+
+  async loadTransactions() {
+    const b = this.budget();
+    if (!b) return;
+
+    this.loadingTransactions.set(true);
+    try {
+      const res = await this.transactionService.getTransactions(b.budget_id);
+      this.transactions.set(res.transactions);
+    } catch (error) {
+      console.error('Failed to load transactions:', error);
+    } finally {
+      this.loadingTransactions.set(false);
+    }
+  }
+
+  async loadCategories() {
+    try {
+      const res = await this.transactionService.getCategories();
+      this.categories.set(res.categories);
+    } catch (error) {
+      console.error('Failed to load categories:', error);
+    }
+  }
 
   transactions = signal<TransactionRow[]>([]);
   loadingTransactions = signal(false);
