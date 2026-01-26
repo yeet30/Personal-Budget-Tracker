@@ -5,7 +5,7 @@ import { BudgetRow } from '../../../services/budget-service';
   selector: 'app-overview-card',
   imports: [],
   templateUrl: './overview.html',
-  styleUrl: './overview.scss',
+  styleUrl: '../cards-common.scss',
 })
 export class Overview {
   @Input({ required: true })

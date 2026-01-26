@@ -1,1 +1,174 @@
-<p>transactions works!</p>
+<div id="transactions-frame">
+    <ul id="side-ul">
+        <li>
+            <a  class="side-button"
+                [class.active]="selected_side() === 'income'" 
+                (click)="setSide('income')"
+                >INCOME
+            </a>
+        </li>
+        <li>
+            <a  class="side-button"
+                [class.active]="selected_side() === 'expense'" 
+                (click)="setSide('expense')"
+                >EXPENSE
+            </a>
+        </li>
+    </ul>
+
+    <div class="card">
+        <div id="transactions-content">
+            <section id="income-section" *ngIf="(selected_side() === 'income')">
+                <div id="income-inputs">
+                    <h3>Please select an income type.</h3>
+                    <p>Stable income means a certain amount of money will for sure be earned in each time period.</p>
+
+                    <section class="income-part" id="stable-income-section">
+                        <label for="income-categories">Stable income</label>
+                        <select 
+                        name="income-categories" 
+                        id="income-categories"
+                        required
+                        [ngModel] = "income_category()"
+                        (ngModelChange) = "income_category.set($event.toLowerCase())"
+                        >
+                            <option value="salary">Salary</option>
+                            <option value="self-employment">Income from self employment</option>
+                            <option value="allowance">Allowance</option>
+                            <option value="aid">Government Aid</option>
+                        </select>
+
+                        <label for="income-amount">Amount of money</label>
+                        <div class="money-input">
+                            <span class="prefix">$</span>
+                            <input 
+                            id="income-amount" 
+                            name="income-amount" 
+                            type="number" 
+                            placeholder="0.00"
+                            required
+                            [ngModel] = "income_amount()"
+                            (ngModelChange) = "income_amount.set($event);"
+                            >
+                        </div>
+                        <button type="button" (click)="addStableIncome()">Add</button>
+                    </section>    
+                    
+                    <h3>Please select a savings type.</h3>
+                    <p>Savings means a certain amount of money had been owned before, or can be added into the budget now.</p>
+                    <section class="income-part" id="savings-section">
+                        <label for="savings-categories">Savings</label>
+                        <select 
+                        name="savings-categories" 
+                        id="savings-categories"
+                        required
+                        [ngModel] = "savings_category()"
+                        (ngModelChange) = "savings_category.set($event.toLowerCase())">
+                            <option value="savings">Savings</option>
+                            <option value="addition">Addition</option>
+                        </select>
+                        <label for="savings-amount">Amount of money</label>
+                        <div class="money-input">
+                            <span class="prefix">$</span>
+                            <input
+                            id="savings-amount" 
+                            name="savings-amount" 
+                            type="number" 
+                            placeholder="0.00"
+                            required
+                            [ngModel] = "savings_amount()"
+                            (ngModelChange) = "savings_amount.set($event);">
+                        </div>
+                        <button type="button" (click)="addSavings()">Add</button>
+                    </section>
+                    
+                </div>
+            </section>
+
+            <section id="expense-section" *ngIf="(selected_side() === 'expense')">
+                <div id="expense-inputs">
+                    <h3>Please select an expense type.</h3>
+                    <p>Fixed cost means a certain amount of money will for sure be spent in each time period.</p>
+
+                    <section class="cost-part" id="fixed-cost-section">
+                        <label for="cost-categories">Fixed cost</label>
+                        <select 
+                        name="cost-categories" 
+                        id="cost-categories"
+                        required
+                        [ngModel] = "cost_category()"
+                        (ngModelChange) = "cost_category.set($event.toLowerCase())"
+                        >
+                            <option value="rent">Rent</option>
+                            <option value="insurance">Insurance</option>
+                            <option value="groceries">Groceries</option>
+                            <option value="bills">Bills</option>
+                        </select>
+
+                        <label for="cost-amount">Amount of money</label>
+                        <div class="money-input">
+                            <span class="prefix">$</span>
+                            <input 
+                            id="cost-amount" 
+                            name="cost-amount" 
+                            type="number" 
+                            placeholder="0.00"
+                            required
+                            [ngModel] = "cost_amount()"
+                            (ngModelChange) = "cost_amount.set($event);"
+                            >
+                        </div>
+                        <button type="button" (click)="addFixedCost()">Add</button>
+                    </section>
+                    
+                    <h3>Please select a leisure type.</h3>
+                    <p>Leisure means a certain amount of money that was spent from the budget.</p>
+                    <section class="cost-part" id="leisure-section">
+                        <label for="leisure-categories">Leisure</label>
+                        <select 
+                        name="leisure-categories" 
+                        id="leisure-categories"
+                        required
+                        [ngModel] = "leisure_category()"
+                        (ngModelChange) = "leisure_category.set($event.toLowerCase())"
+                        >
+                            <option value="dinning">Dinning</option>
+                            <option value="cinema">Cinema</option>
+                            <option value="travel">Travel</option>
+                        </select>
+                        <label for="leisure-amount">Amount of money</label>
+                        <div class="money-input">
+                            <span class="prefix">$</span>
+                            <input
+                            id="leisure-amount" 
+                            name="leisure-amount" 
+                            type="number" 
+                            placeholder="0.00"
+                            required
+                            [ngModel] = "leisure_amount()"
+                            (ngModelChange) = "leisure_amount.set($event);">
+                        </div>
+                        <button type="button" (click)="addLeisure()">Add</button>
+                    </section>
+                    
+                </div>
+            </section>
+
+            <div id="display-section">
+                    <span id="header-span"><h3>Selected Statements</h3></span>
+                    <ul>
+                        <li *ngFor="let t of transaction_array().slice().reverse()">
+                            <span *ngIf="t.amount > 0" class="income-amount-span">+ $ {{t.amount}}</span>
+                            <span *ngIf="t.amount < 0" class="cost-amount-span">- $ {{t.amount*-1}}</span>
+                            <span class="info-span">from {{t.type}}</span>
+                        </li>
+                    </ul>
+                    <div id="total-operation">
+                        <span id="total-span">+ Total</span>
+                        <span id="total-line"></span>
+                        <span id="total-amount">$ {{total_amount()}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

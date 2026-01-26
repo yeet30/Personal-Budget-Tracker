@@ -1,16 +1,18 @@
-<h3>Members</h3>
-<div class="error" *ngIf="membersError()">{{ membersError() }}</div>
+<div class="card">
+    <h3>Members</h3>
+    <div class="error" *ngIf="membersError()">{{ membersError() }}</div>
 
-<ul *ngIf="!membersError()">
-<li *ngFor="let m of members">{{ m.username }} ({{ m.type }})</li>
-</ul>
+    <ul *ngIf="!membersError()">
+    <li *ngFor="let m of members">{{ m.username }} ({{ m.type }})</li>
+    </ul>
 
-<div class="invite" *ngIf="budget()?.type === 'OWNER'">
-    <h3>Invite user</h3>
+    <div class="invite" *ngIf="budget()?.type === 'OWNER'">
+        <h3>Invite user</h3>
 
-    <input type="text" placeholder="Email or username" [(ngModel)]="inviteIdentifier" />
-    <button type="button" (click)="inviteUser()">Add</button>
-    
-    <div class="error" *ngIf="inviteError">{{ inviteError }}</div>
-    <div class="success" *ngIf="inviteSuccess">{{ inviteSuccess }}</div>
+        <input type="text" placeholder="Email or username" [(ngModel)]="inviteIdentifier" />
+        <button type="button" (click)="inviteUser()">Add</button>
+        
+        <div class="error" *ngIf="inviteError">{{ inviteError }}</div>
+        <div class="success" *ngIf="inviteSuccess">{{ inviteSuccess }}</div>
+    </div>
 </div>
