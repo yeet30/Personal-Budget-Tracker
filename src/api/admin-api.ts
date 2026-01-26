@@ -297,6 +297,7 @@ export function registerAdminApi({
       }
     },
   );
+<<<<<<< HEAD
 
   app.get("/api/admin/categories", requireAuth, requireAdmin, async (_req, res) => {
     try {
@@ -524,4 +525,6 @@ export function registerAdminApi({
       return res.status(500).json({ message: "Internal server error." });
     }
   });
+=======
+>>>>>>> budget-page-changes
 }

@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BudgetRow } from '../../../services/budget-service';
 import { BudgetService } from '../../../services/budget-service';
@@ -21,7 +21,7 @@ export class Members {
   @Input({ required: true })
   membersError!: () => string | null;
   @Input({ required: true })
-  budget!: () => BudgetRow | null;
+  budget!: WritableSignal<BudgetRow | null>;
   @Input({ required: true })
   routeId: number = 0;
 
