@@ -22,17 +22,56 @@
                 <span *ngIf="canEditAnyTransaction()">Actions</span>
             </div>
             <div class="transaction-row" *ngFor="let t of transactions()">
-                <span>{{ t.date }}</span>
+                <span *ngIf="editingId() !== t.transaction_id">{{ t.date }}</span>
+                <span *ngIf="editingId() === t.transaction_id">
+                    <input type="date" [(ngModel)]="editForm().date" />
+                </span>
+
                 <span>{{ t.username }}</span>
-                <span>{{ t.category_name }}</span>
-                <span [class]="t.type.toLowerCase()">{{ t.type }}</span>
-                <span [class]="t.type === 'INCOME' ? 'income-amount' : 'expense-amount'">
+
+                <span *ngIf="editingId() !== t.transaction_id">{{ t.category_name }}</span>
+                <span *ngIf="editingId() === t.transaction_id">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <select [(ngModel)]="editForm().category_id">
+                            <option *ngFor="let c of categories()" [ngValue]="c.category_id">
+                                {{ c.name }}
+                            </option>
+                        </select>
+                        <button *ngIf="isAdmin()" type="button" (click)="addNewCategory()" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">+ Add</button>
+                    </div>
+                </span>
+
+                <span *ngIf="editingId() !== t.transaction_id" [class]="t.type.toLowerCase()">{{ t.type }}</span>
+                <span *ngIf="editingId() === t.transaction_id">
+                    <select [(ngModel)]="editForm().type">
+                        <option value="INCOME">INCOME</option>
+                        <option value="EXPENSE">EXPENSE</option>
+                    </select>
+                </span>
+
+                <span *ngIf="editingId() !== t.transaction_id" [class]="t.type === 'INCOME' ? 'income-amount' : 'expense-amount'">
                     {{ t.type === 'INCOME' ? '+' : '-' }}{{ t.amount }} {{ t.currency }}
                 </span>
-                <span>{{ t.description || '—' }}</span>
+                <span *ngIf="editingId() === t.transaction_id">
+                    <input type="number" step="0.01" [(ngModel)]="editForm().amount" />
+                </span>
+
+                <span *ngIf="editingId() !== t.transaction_id">{{ t.description || '—' }}</span>
+                <span *ngIf="editingId() === t.transaction_id">
+                    <input type="text" [(ngModel)]="editForm().description" />
+                </span>
+
                 <span *ngIf="canEditAnyTransaction()" class="actions">
-                    <button *ngIf="canEditTransaction(t)" (click)="editTransaction(t)" class="edit-btn">Edit</button>
-                    <button *ngIf="canEditTransaction(t)" (click)="deleteTransaction(t)" class="delete-btn">Delete</button>
+                    <ng-container *ngIf="editingId() !== t.transaction_id; else editActions">
+                        <button *ngIf="canEditTransaction(t)" (click)="editTransaction(t)" class="edit-btn">Edit</button>
+                        <button *ngIf="canEditTransaction(t)" (click)="deleteTransaction(t)" class="delete-btn">Delete</button>
+                    </ng-container>
+                    <ng-template #editActions>
+                        <div class="edit-actions">
+                            <button (click)="saveEdit()" class="save-btn">Save</button>
+                            <button (click)="cancelEdit()" class="cancel-btn">Cancel</button>
+                        </div>
+                    </ng-template>
                 </span>
             </div>
         </div>

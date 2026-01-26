@@ -1,12 +1,14 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
 import { BudgetRow } from '../../../services/budget-service';
-import { TransactionService, TransactionRow } from '../../../services/transaction-service';
+import { TransactionService, TransactionRow, CategoryRow } from '../../../services/transaction-service';
 import { AuthService } from '../../../services/auth-service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { UserService } from '../../../services/user-service';
 
 @Component({
   selector: 'app-overview-card',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './overview.html',
   styleUrl: '../cards-common.scss',
 })
@@ -16,11 +18,22 @@ export class Overview implements OnInit {
 
   transactions = signal<TransactionRow[]>([]);
   loadingTransactions = signal(false);
+  categories = signal<CategoryRow[]>([]);
 
-  constructor(private transactionService: TransactionService, private authService: AuthService) {}
+  editingId = signal<number | null>(null);
+  editForm = signal({
+    category_id: 0,
+    amount: '',
+    type: 'INCOME' as 'INCOME' | 'EXPENSE',
+    date: '',
+    description: '',
+  });
+
+  constructor(private transactionService: TransactionService, private authService: AuthService, private userService: UserService) {}
 
   ngOnInit() {
     this.loadTransactions();
+    this.loadCategories();
   }
 
   async loadTransactions() {
@@ -35,6 +48,15 @@ export class Overview implements OnInit {
       console.error('Failed to load transactions:', error);
     } finally {
       this.loadingTransactions.set(false);
+    }
+  }
+
+  async loadCategories() {
+    try {
+      const res = await this.transactionService.getCategories();
+      this.categories.set(res.categories);
+    } catch (error) {
+      console.error('Failed to load categories:', error);
     }
   }
 
@@ -74,38 +96,66 @@ export class Overview implements OnInit {
   }
 
   editTransaction(transaction: TransactionRow) {
-    const b = this.budget();
-    if (!b) return;
+    this.editingId.set(transaction.transaction_id);
+    this.editForm.set({
+      category_id: transaction.category_id,
+      amount: transaction.amount.toString(),
+      type: transaction.type,
+      date: transaction.date,
+      description: transaction.description || '',
+    });
+  }
 
-    const newCategory = prompt('Category:', transaction.category_name);
-    const newAmount = prompt('Amount:', transaction.amount.toString());
-    const newType = prompt('Type (INCOME/EXPENSE):', transaction.type);
-    const newDate = prompt('Date (YYYY-MM-DD):', transaction.date);
-    const newDescription = prompt('Description:', transaction.description || '');
+  cancelEdit() {
+    this.editingId.set(null);
+    this.editForm.set({
+      category_id: 0,
+      amount: '',
+      type: 'INCOME',
+      date: '',
+      description: '',
+    });
+  }
 
-    if (!newCategory || !newAmount || !newType || !newDate) {
-      return;
-    }
+  async saveEdit() {
+    const id = this.editingId();
+    if (!id) return;
 
-    const amount = parseFloat(newAmount);
+    const form = this.editForm();
+    const amount = parseFloat(form.amount);
+    
     if (isNaN(amount) || amount <= 0) {
       alert('Invalid amount');
       return;
     }
 
-    if (newType !== 'INCOME' && newType !== 'EXPENSE') {
+    if (form.type !== 'INCOME' && form.type !== 'EXPENSE') {
       alert('Type must be INCOME or EXPENSE');
       return;
     }
 
-    this.updateTransaction(transaction.transaction_id, {
-      category: newCategory,
-      amount: amount,
-      currency: transaction.currency,
-      type: newType as 'INCOME' | 'EXPENSE',
-      date: newDate,
-      description: newDescription || undefined
-    });
+    const category = this.categories().find(c => c.category_id === form.category_id);
+    if (!category) {
+      alert('Please select a valid category');
+      return;
+    }
+
+    try {
+      await this.transactionService.updateTransaction(this.budget()!.budget_id, id, {
+        category: category.name,
+        amount: amount,
+        currency: this.budget()!.currency,
+        type: form.type,
+        date: form.date,
+        description: form.description || undefined
+      });
+
+      this.editingId.set(null);
+      await this.loadTransactions();
+    } catch (error) {
+      console.error('Failed to update transaction:', error);
+      alert('Failed to update transaction');
+    }
   }
 
   async updateTransaction(transactionId: number, data: any) {
@@ -134,5 +184,29 @@ export class Overview implements OnInit {
         alert('Failed to delete transaction. Please try again.');
       }
     }
+  }
+
+  async addNewCategory() {
+    const categoryName = prompt('Enter new category name:');
+    if (!categoryName || !categoryName.trim()) return;
+
+    const description = prompt('Enter category description (optional):');
+
+    try {
+      await this.userService.adminCreateCategory({
+        name: categoryName.trim(),
+        description: description?.trim() || undefined,
+      });
+
+      // Reload categories to include the new one
+      await this.loadCategories();
+    } catch (error) {
+      console.error('Failed to add category:', error);
+      alert('Failed to add category. You may not have admin permissions.');
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.authService.user()?.role_id === 2;
   }
 }
