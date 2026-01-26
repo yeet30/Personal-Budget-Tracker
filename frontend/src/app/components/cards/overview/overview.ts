@@ -1,14 +1,18 @@
 import { Component, Input, OnInit, signal, WritableSignal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router, RouterLink} from '@angular/router';
+
 import { BudgetRow, BudgetService } from '../../../services/budget-service';
 import { TransactionService, TransactionRow, CategoryRow } from '../../../services/transaction-service';
 import { AuthService } from '../../../services/auth-service';
 import { UserService } from '../../../services/user-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DeleteBudget } from '../../delete-budget/delete-budget';
 
 @Component({
   selector: 'app-overview-card',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './overview.html',
   styleUrl: '../cards-common.scss',
 })
@@ -30,18 +34,36 @@ export class Overview implements OnInit {
     description: '',
   });
 
-  constructor(private budgetService: BudgetService, private transactionService: TransactionService, private authService: AuthService, private userService: UserService) {}
+  decision : boolean = false;
+
+  constructor(
+    private budgetService: BudgetService, 
+    private transactionService: TransactionService, 
+    private authService: AuthService, 
+    private userService: UserService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadTransactions();
     this.loadCategories();
   }
 
-  async deleteBudget(){
-    const budgetValue = this.budget();
-    if (budgetValue) {
-      await this.budgetService.deleteBudget({name: budgetValue.name})
-    }
+  deleteBudget() {
+    const dialogRef = this.dialog.open(DeleteBudget, {
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(async dec => {
+      if (!dec) return;
+
+      const budgetValue = this.budget();
+      if (budgetValue) {
+        await this.budgetService.deleteBudget({ name: budgetValue.name });
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   async loadTransactions() {
