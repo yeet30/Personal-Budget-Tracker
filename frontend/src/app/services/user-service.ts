@@ -14,7 +14,6 @@ export type RoleRow = {
   role_id: number;
   name: string;
 };
-<<<<<<< HEAD
 
 export type CategoryRow = {
   category_id: number;
@@ -47,8 +46,6 @@ export type controlTransactionRow = {
   username: string;
   budget_name: string;
 };
-=======
->>>>>>> budget-page-changes
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private http: HttpClient) {}
@@ -171,7 +168,6 @@ export class UserService {
       throw { status: err.status, error: err.error, message: err.message };
     }
   }
-<<<<<<< HEAD
 
   async adminGetCategories(): Promise<{ categories: CategoryRow[] }> {
     try {
@@ -261,6 +257,4 @@ export class UserService {
       throw { status: err.status, error: err.error, message: err.message };
     }
   }
-=======
->>>>>>> budget-page-changes
 }
