@@ -6,6 +6,7 @@ import { UserService, CategoryRow } from '../../services/user-service';
 type EditModel = {
   name: string;
   description: string;
+  category_type: string;
 };
 
 @Component({
@@ -28,19 +29,26 @@ export class AdminCategoriesPage implements OnInit {
   createForm = signal({
     name: '',
     description: '',
+    category_type: 'EXPENSE',
   });
 
   editingId = signal<number | null>(null);
   editForm = signal<EditModel>({
     name: '',
     description: '',
+    category_type: 'EXPENSE',
   });
   fieldErrors = signal<{
     name?: string;
     description?: string;
-  }>({});
+    category_type?: string;
 
-  constructor(private userService: UserService) {}
+  }>({});
+  setCreateCategoryType(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.createForm.update(form => ({ ...form, category_type: target.value }));
+  }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
     this.loadCategories();
@@ -86,9 +94,8 @@ export class AdminCategoriesPage implements OnInit {
     this.error.set(null);
     this.success.set(null);
 
-    const { name, description } = this.createForm();
+    const { name, description, category_type } = this.createForm();
 
-    // Basic validation
     if (!name.trim()) {
       this.fieldErrors.set({ name: 'Category name is required' });
       return;
@@ -99,13 +106,13 @@ export class AdminCategoriesPage implements OnInit {
       const result = await this.userService.adminCreateCategory({
         name: name.trim(),
         description: description.trim() || undefined,
+        category_type: category_type,
       });
       console.log('Category created:', result);
 
       this.success.set('Category created successfully');
-      this.createForm.set({ name: '', description: '' });
-      
-      // Force reload categories to ensure the new category appears
+      this.createForm.set({ name: '', description: '', category_type: 'EXPENSE' });
+
       console.log('Reloading categories...');
       await this.loadCategories();
       console.log('Categories reloaded, current count:', this.categories().length);
@@ -126,6 +133,7 @@ export class AdminCategoriesPage implements OnInit {
     this.editForm.set({
       name: category.name,
       description: category.description || '',
+      category_type: category.category_type || 'EXPENSE',
     });
     this.fieldErrors.set({});
     this.error.set(null);
@@ -134,7 +142,7 @@ export class AdminCategoriesPage implements OnInit {
 
   cancelEdit() {
     this.editingId.set(null);
-    this.editForm.set({ name: '', description: '' });
+    this.editForm.set({ name: '', description: '', category_type: 'EXPENSE' });
     this.fieldErrors.set({});
   }
 

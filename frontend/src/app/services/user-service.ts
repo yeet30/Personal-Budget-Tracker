@@ -19,6 +19,7 @@ export type CategoryRow = {
   category_id: number;
   name: string;
   description: string | null;
+  category_type: string;
   created_at: string;
 };
 
@@ -140,6 +141,7 @@ export class UserService {
       username?: string;
       password?: string;
       role_id?: number;
+      category_type?: string;
     },
   ): Promise<any> {
     try {
@@ -183,6 +185,7 @@ export class UserService {
   async adminCreateCategory(payload: {
     name: string;
     description?: string;
+    category_type?: string;
   }): Promise<any> {
     try {
       return await firstValueFrom(
@@ -201,6 +204,7 @@ export class UserService {
     payload: {
       name?: string;
       description?: string;
+      category_type?: string;
     },
   ): Promise<any> {
     try {

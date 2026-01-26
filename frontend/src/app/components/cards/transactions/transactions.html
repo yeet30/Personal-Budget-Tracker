@@ -35,7 +35,7 @@
                         >
                             <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
                             <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
-                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                            <option *ngFor="let category of incomeCategories" [ngValue]="category.category_id">
                                 {{ category.name }}
                             </option>
                         </select>
@@ -70,7 +70,7 @@
                         >
                             <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
                             <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
-                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                            <option *ngFor="let category of incomeCategories" [ngValue]="category.category_id">
                                 {{ category.name }}
                             </option>
                         </select>
@@ -109,7 +109,7 @@
                         >
                             <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
                             <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
-                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                            <option *ngFor="let category of expenseCategories" [ngValue]="category.category_id">
                                 {{ category.name }}
                             </option>
                         </select>
@@ -144,7 +144,7 @@
                         >
                             <option [ngValue]="null" disabled *ngIf="!loadingCategories()">Select a category</option>
                             <option *ngIf="loadingCategories()" disabled>Loading categories...</option>
-                            <option *ngFor="let category of categories()" [ngValue]="category.category_id">
+                            <option *ngFor="let category of expenseCategories" [ngValue]="category.category_id">
                                 {{ category.name }}
                             </option>
                         </select>

@@ -52,7 +52,8 @@ CREATE TABLE "category"(
   "category_id" INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT NULL,
   "name" VARCHAR(100) NOT NULL,
   "description" VARCHAR(255) DEFAULT NULL,
-  "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP
+  "created_at" DATETIME DEFAULT CURRENT_TIMESTAMP,
+  "category_type" TEXT NOT NULL DEFAULT 'EXPENSE' CHECK("category_type" IN ('EXPENSE', 'INCOME'))
 );
 CREATE TABLE "transaction"(
   "transaction_id" INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT NULL,
@@ -107,11 +108,11 @@ CREATE INDEX "audit_log.audit_id" ON "audit_log" ("user_id");
 CREATE TABLE IF NOT EXISTS notification (
   notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
-  type TEXT NOT NULL,                -- 'TRANSACTION_ADDED' | 'BUDGET_INVITE' | ...
+  type TEXT NOT NULL,
   title TEXT NOT NULL,
   message TEXT NOT NULL,
-  entity_type TEXT,                  -- 'budget' | 'transaction' | 'invite'
-  entity_id INTEGER,                 -- points to budget_id / transaction_id / invite_id
+  entity_type TEXT,
+  entity_id INTEGER,
   is_read INTEGER NOT NULL DEFAULT 0,
   created_at DATETIME NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (user_id) REFERENCES user(user_id)

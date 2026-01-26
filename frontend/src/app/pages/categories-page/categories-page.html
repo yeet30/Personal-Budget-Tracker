@@ -26,7 +26,16 @@
         </div>
       </label>
     </div>
-
+<label>
+        Category Type
+        <select [(ngModel)]="createForm().category_type" (change)="setCreateCategoryType($event)">
+          <option value="EXPENSE">Expense</option>
+          <option value="INCOME">Income</option>
+        </select>
+        <div class="error" *ngIf="fieldErrors().category_type">
+          {{ fieldErrors().category_type }}
+        </div>
+      </label>
     <button class="primary" (click)="createCategory()" [disabled]="creating()">
       {{ creating() ? 'Creating...' : 'Create' }}
     </button>

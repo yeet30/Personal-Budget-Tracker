@@ -217,4 +217,12 @@ export class Transactions implements OnInit {
   setSide(side:side){
     this.selected_side.set(side)
   }
+
+  get incomeCategories() {
+    return this.categories().filter(c => c.category_type === 'INCOME');
+  }
+
+  get expenseCategories() {
+    return this.categories().filter(c => c.category_type === 'EXPENSE');
+  }
 }
