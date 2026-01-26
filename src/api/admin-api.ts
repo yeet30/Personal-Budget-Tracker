@@ -301,7 +301,19 @@ export function registerAdminApi({
   app.get("/api/admin/categories", requireAuth, requireAdmin, async (_req, res) => {
     try {
       const categories = await db.all(
-        `SELECT category_id, name, description, created_at FROM category ORDER BY name`
+        `SELECT category_id, name, description, created_at, category_type FROM category ORDER BY name`
+      );
+      return res.json({ categories });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  });
+
+  app.get("/api/categories", requireAuth, async (_req, res) => {
+    try {
+      const categories = await db.all(
+        `SELECT category_id, name, description, created_at, category_type FROM category ORDER BY name`
       );
       return res.json({ categories });
     } catch (err) {
@@ -311,7 +323,7 @@ export function registerAdminApi({
   });
 
   app.post("/api/admin/categories", requireAuth, requireAdmin, async (req, res) => {
-    const { name, description } = req.body ?? {};
+    const { name, description, category_type } = req.body ?? {};
     const errors: Record<string, string> = {};
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -361,7 +373,7 @@ export function registerAdminApi({
     if (!Number.isFinite(id))
       return res.status(400).json({ message: "Invalid category ID." });
 
-    const { name, description } = req.body ?? {};
+    const { name, description, category_type } = req.body ?? {};
     const errors: Record<string, string> = {};
 
     if (name !== undefined) {
@@ -374,6 +386,12 @@ export function registerAdminApi({
 
     if (description !== undefined && (typeof description !== 'string' || description.length > 255)) {
       errors.description = "Description must be 255 characters or less.";
+    }
+
+    if (category_type !== undefined) {
+      if (typeof category_type !== 'string' || (category_type !== 'INCOME' && category_type !== 'EXPENSE')) {
+        errors.category_type = "Category type must be either 'INCOME' or 'EXPENSE'.";
+      }
     }
 
     if (Object.keys(errors).length > 0) {
