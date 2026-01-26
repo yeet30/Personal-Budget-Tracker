@@ -88,7 +88,7 @@
 
           <td class="actions">
             <ng-container *ngIf="editingId() !== u.user_id; else editActions">
-              <button (click)="startEdit(u)">Edit</button>
+              <button class="secondary" (click)="startEdit(u)">Edit</button>
               <button class="danger" (click)="deleteUser(u)">Delete</button>
             </ng-container>
 
@@ -101,7 +101,7 @@
 
                 <div class="btn-row">
                   <button class="primary" (click)="saveEdit(u.user_id)">Save</button>
-                  <button (click)="cancelEdit()">Cancel</button>
+                  <button class="secondary" (click)="cancelEdit()">Cancel</button>
                 </div>
               </div>
             </ng-template>
