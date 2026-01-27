@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router, RouterLink} from '@angular/router';
+import { Router} from '@angular/router';
 import { BudgetRow, BudgetService } from '../../../services/budget-service';
 import { TransactionService, TransactionRow, CategoryRow } from '../../../services/transaction-service';
 import { AuthService } from '../../../services/auth-service';
@@ -11,7 +11,7 @@ import { DeleteBudget } from '../../delete-budget/delete-budget';
 
 @Component({
   selector: 'app-overview-card',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './overview.html',
   styleUrl: '../cards-common.scss',
 })
@@ -58,7 +58,14 @@ export class Overview implements OnInit {
 
       const budgetValue = this.budget();
       if (budgetValue) {
-        await this.budgetService.deleteBudget({ name: budgetValue.name });
+        this.budgetService.deleteBudget({ id: budgetValue.budget_id }).subscribe({
+          next: () => {
+            console.log('Budget deleted');
+          },
+          error: err => {
+            console.error('Delete failed', err);
+          }
+          });;
         this.router.navigate(['/login']);
       }
     });

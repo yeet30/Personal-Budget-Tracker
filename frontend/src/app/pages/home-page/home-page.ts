@@ -17,7 +17,6 @@ export class HomePage implements OnInit {
   allBudgets = signal<controlBudgetRow[]>([]);
   allTransactions = signal<controlTransactionRow[]>([]);
   has_budgets = signal<boolean>(true);
-  total_balance = signal<number>(0);
 
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -31,12 +30,14 @@ export class HomePage implements OnInit {
   async ngOnInit(){
     if (this.isControl()) {
       await this.loadAllBudgets();
+      await this.loadBudgets();
       await this.loadAllTransactions();
     } else {
       await this.loadBudgets();
     }
     if(this.budgets().length === 0) 
       this.has_budgets.set(true)
+    console.log(this.allTransactions())
 
   }
 
@@ -82,6 +83,7 @@ export class HomePage implements OnInit {
     try {
       const res = await this.userService.controlGetAllTransactions();
       this.allTransactions.set(res.transactions);
+      console.log(res.transactions)
     } catch (e: any) {
       console.error('Failed to load transactions:', e);
     }

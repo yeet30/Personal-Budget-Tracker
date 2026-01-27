@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 export type BudgetRow = {
   budget_id: number;
@@ -58,12 +58,12 @@ export class BudgetService {
     }
   }
 
-  async deleteBudget(payload:{
-    name:string;
-  }): Promise<any>{
+  deleteBudget(payload:{
+    id:number;
+  }): Observable<any>{
     try{
-      const params = new HttpParams().set('name', payload.name);
-      return await this.http.delete("/api/budgets", { params })
+      const params = new HttpParams().set('id', payload.id);
+      return this.http.delete('/api/budgets', { params });
     }
     catch (e) {
       const err = e as HttpErrorResponse;

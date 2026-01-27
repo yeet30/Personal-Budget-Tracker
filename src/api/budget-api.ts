@@ -97,6 +97,24 @@ export function registerBudgetApi(params: {
     }
   });
 
+  app.delete('/api/budgets', (req, res) => {
+  const id = Number(req.query.id);
+  console.log(id)
+  if (!id) {
+    return res.status(400).json({ message: 'Budget id is required' });
+  }
+    db.run(
+    'DELETE FROM budget WHERE budget_id = ?',
+    [id],
+    function (err: Error | null) {
+      if (err) {
+        return res.status(500).json({ message: err.message });
+      }
+
+      return res.status(204).send();
+    });
+  });
+
   app.get("/api/budgets/:id", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.user_id;

@@ -3,8 +3,6 @@
     <div><strong>Period:</strong> {{ budget()!.start_date }} → {{ budget()!.end_date }}</div>
     <div><strong>Created:</strong> {{ budget()!.created_at || '—' }}</div>
     <div><strong>Your role:</strong> {{ getMyRoleLabel() }}</div>
-    <div><strong>Current balance:</strong></div>
-    <div><strong>Projected amount of money by the end of the period:</strong></div>
     <div id="delete-button-div" (click)="deleteBudget()"><button>Delete Budget</button></div>
     
     <div><strong>Total Income:</strong> {{ getTotalIncome() }} {{ budget()!.currency }}</div>
