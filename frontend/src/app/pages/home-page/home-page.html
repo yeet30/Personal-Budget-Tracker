@@ -60,13 +60,13 @@
                 <div class="card">
                     <h2 *ngIf="budgets().length === 1">You have only one budget.</h2>
                     <h2 *ngIf="budgets().length > 1">You have {{budgets().length}} budgets.</h2>
-                    <h3>Current total balance from all your budgets combined: </h3>
+                    <h3>Current total balance from all your budgets combined: {{totalNet()}} {{budgets()[0].currency}} </h3>
                 </div>
                 <div class="card">
                     <h2>Your budget's current balances</h2>
                     <ul *ngIf="!loading() && !error()">
                         <li *ngFor="let b of budgets().slice().reverse()">
-                            "{{b.name}}", current balance: 100 {{b.currency}}
+                            "{{b.name}}", current balance:  {{  budgetNetMap().get(b.budget_id)}} {{b.currency}}
                         </li>
                     </ul>
                 </div>

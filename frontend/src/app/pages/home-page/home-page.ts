@@ -1,9 +1,10 @@
-import { Component, OnInit, signal } from "@angular/core";
+import { Component, OnInit, signal, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 import { AuthService } from "../../services/auth-service";
 import { BudgetRow, BudgetService } from "../../services/budget-service";
 import { UserService, controlTransactionRow, controlBudgetRow } from "../../services/user-service";
+import { TransactionService } from "../../services/transaction-service";
 
 @Component({
   selector: "app-home-page",
@@ -17,27 +18,35 @@ export class HomePage implements OnInit {
   allBudgets = signal<controlBudgetRow[]>([]);
   allTransactions = signal<controlTransactionRow[]>([]);
   has_budgets = signal<boolean>(true);
-
+  budgetNetMap = signal<Map<number, number>>(new Map());
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
+
+  totalNet = computed(() => {
+  let sum = 0;
+  for (const value of this.budgetNetMap().values()) {
+    sum += value;
+  }
+  return sum;
+  });
 
   constructor(
     public auth: AuthService,
     private budgetService: BudgetService,
     private userService: UserService,
+    private transactionService: TransactionService
   ) {}
 
   async ngOnInit(){
     if (this.isControl()) {
       await this.loadAllBudgets();
-      await this.loadBudgets();
       await this.loadAllTransactions();
     } else {
       await this.loadBudgets();
+      await this.loadBudgetNet()
     }
     if(this.budgets().length === 0) 
       this.has_budgets.set(true)
-    console.log(this.allTransactions())
 
   }
 
@@ -83,10 +92,22 @@ export class HomePage implements OnInit {
     try {
       const res = await this.userService.controlGetAllTransactions();
       this.allTransactions.set(res.transactions);
-      console.log(res.transactions)
     } catch (e: any) {
       console.error('Failed to load transactions:', e);
     }
+  }
+
+  async loadBudgetNet() {
+    const map = new Map<number, number>();
+    for (let b of this.budgets()) {
+      const res = await this.transactionService.getTransactions(b.budget_id);
+      const net = res.transactions.reduce(
+        (sum, t) => t.type === 'INCOME' ? sum + t.amount : sum - t.amount,
+        0
+      );
+      map.set(b.budget_id, net);
+    }
+    this.budgetNetMap.set(map);
   }
 
 }

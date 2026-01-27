@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { RegisterForm } from '../form-validator';
@@ -49,6 +49,8 @@ export type controlTransactionRow = {
 @Injectable({ providedIn: 'root' })
 export class UserService {
   constructor(private http: HttpClient) {}
+
+  transactions = signal<controlTransactionRow[]>([]);
 
   async addUser(userData: RegisterForm) {
     try {
